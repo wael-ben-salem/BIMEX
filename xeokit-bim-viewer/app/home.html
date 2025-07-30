@@ -1,0 +1,1170 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>xeokit BIM Viewer - Accueil</title>
+    <link rel="stylesheet" href="./lib/fontawesome-free-5.11.2-web/css/all.min.css" type="text/css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: white;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .logo {
+            font-size: 4em;
+            margin-bottom: 20px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .hero-title {
+            font-size: 3em;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero-subtitle {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        .search-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .add-model-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .add-model-btn {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .add-model-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
+        }
+
+        .search-box {
+            background: white;
+            border-radius: 50px;
+            padding: 15px 25px;
+            margin: 0 auto;
+            max-width: 500px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+        }
+
+        .search-box input {
+            border: none;
+            outline: none;
+            width: 100%;
+            font-size: 1.1em;
+            background: transparent;
+            margin-left: 15px;
+        }
+
+        .search-box i {
+            color: #667eea;
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .project-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+
+        .project-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .project-icon {
+            font-size: 2.5em;
+            color: #667eea;
+            margin-right: 15px;
+        }
+
+        .project-info h3 {
+            font-size: 1.4em;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .project-info .project-id {
+            font-size: 0.9em;
+            color: #888;
+        }
+
+        .project-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            flex: 1;
+            min-width: 120px;
+            padding: 12px 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9em;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .action-btn.primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .action-btn.primary:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+        }
+
+        .action-btn.secondary {
+            background: #f7fafc;
+            color: #4a5568;
+            border: 1px solid #e2e8f0;
+        }
+
+        .action-btn.secondary:hover {
+            background: #edf2f7;
+            transform: translateY(-2px);
+        }
+
+        .action-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .loading {
+            text-align: center;
+            color: white;
+            font-size: 1.2em;
+            margin-top: 50px;
+        }
+
+        .error {
+            text-align: center;
+            color: #ffcdd2;
+            background: rgba(244, 67, 54, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 50px;
+        }
+
+        .stats-bar {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: 700;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            position: relative;
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .modal-title {
+            font-size: 1.5em;
+            font-weight: 600;
+            color: #333;
+            margin: 0;
+        }
+
+        .close {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close:hover {
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-input {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-input-display {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            border: 2px dashed #e0e0e0;
+            border-radius: 8px;
+            background: #f9f9f9;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .file-input-display:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .file-input-display.has-file {
+            border-color: #4CAF50;
+            background: #f0fff0;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+            margin-top: 30px;
+        }
+
+        .modal-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .modal-btn.primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .modal-btn.primary:hover {
+            background: #5a67d8;
+        }
+
+        .modal-btn.secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .modal-btn.secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .progress-container {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #f0f0f0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.2em;
+            }
+
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-bar {
+                gap: 20px;
+            }
+
+            .action-btn {
+                min-width: 100px;
+                font-size: 0.8em;
+                padding: 10px 12px;
+            }
+
+            .modal-content {
+                margin: 10% auto;
+                width: 95%;
+                padding: 20px;
+            }
+
+            .modal-actions {
+                flex-direction: column;
+            }
+
+            .modal-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <i class="fas fa-building"></i>
+            </div>
+
+            <h1 class="hero-title">xeokit BIM Viewer</h1>
+
+            <p class="hero-subtitle">
+                Sélectionnez un projet pour commencer la visualisation
+            </p>
+        </div>
+
+        <div class="stats-bar">
+            <div class="stat-item">
+                <span class="stat-number" id="projectCount">-</span>
+                <span class="stat-label">Projets</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">3D</span>
+                <span class="stat-label">Visualisation</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">∞</span>
+                <span class="stat-label">Possibilités</span>
+            </div>
+        </div>
+
+        <div class="add-model-section">
+            <button class="add-model-btn" onclick="openAddModelModal()">
+                <i class="fas fa-plus"></i>
+                Ajouter un modèle IFC
+            </button>
+        </div>
+
+        <div class="search-section">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Rechercher un projet...">
+            </div>
+        </div>
+
+        <div id="projectsContainer">
+            <div class="loading">
+                <i class="fas fa-spinner fa-spin"></i> Chargement des projets...
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal pour ajouter un modèle -->
+    <div id="addModelModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Ajouter un nouveau modèle IFC</h2>
+                <span class="close" onclick="closeAddModelModal()">&times;</span>
+            </div>
+
+            <form id="addModelForm">
+                <div class="form-group">
+                    <label class="form-label" for="projectName">Nom du projet</label>
+                    <input type="text" id="projectName" class="form-input" placeholder="Entrez le nom du projet..." required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="ifcFile">Fichier IFC</label>
+                    <div class="file-input-wrapper">
+                        <input type="file" id="ifcFile" class="file-input" accept=".ifc" required>
+                        <div class="file-input-display" id="fileInputDisplay">
+                            <i class="fas fa-upload" style="margin-right: 10px; color: #667eea;"></i>
+                            <span>Cliquez pour sélectionner un fichier IFC</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="progress-container" id="progressContainer">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <div class="progress-text" id="progressText">Préparation...</div>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="modal-btn secondary" onclick="closeAddModelModal()">Annuler</button>
+                    <button type="submit" class="modal-btn primary" id="submitBtn">Ajouter le modèle</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Icônes pour différents types de projets
+        const projectIcons = {
+            'Test1': 'fas fa-home',
+            'Duplex': 'fas fa-building',
+            'Schependomlaan': 'fas fa-city',
+            'WestRiversideHospital': 'fas fa-hospital',
+            'OTCConferenceCenter': 'fas fa-users',
+            'HolterTower': 'fas fa-building',
+            'Clinic': 'fas fa-hospital-alt',
+            'MAP': 'fas fa-map',
+            'MAPPointCloud': 'fas fa-cloud',
+            'default': 'fas fa-cube'
+        };
+
+        let allProjects = [];
+
+        async function loadProjects() {
+            try {
+                const response = await fetch('./data/projects/index.json');
+                const data = await response.json();
+
+                // Charger tous les projets du dossier
+                const allProjectsResponse = await loadAllProjectsFromDirectory();
+                allProjects = allProjectsResponse;
+
+                document.getElementById('projectCount').textContent = allProjects.length;
+                displayProjects(allProjects);
+
+                // Animation du compteur
+                setTimeout(() => {
+                    animateNumber(document.getElementById('projectCount'), allProjects.length);
+                }, 500);
+
+            } catch (error) {
+                console.error('Erreur lors du chargement des projets:', error);
+                document.getElementById('projectsContainer').innerHTML = `
+                    <div class="error">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h3>Erreur de chargement</h3>
+                        <p>Impossible de charger la liste des projets.</p>
+                    </div>
+                `;
+            }
+        }
+
+        async function loadAllProjectsFromDirectory() {
+            try {
+                // Utiliser l'endpoint backend pour scanner tous les projets
+                const response = await fetch(`${API_BASE_URL}/scan-projects`);
+                const data = await response.json();
+
+                return data.projects || [];
+            } catch (error) {
+                console.error('Erreur lors du scan des projets:', error);
+
+                // Fallback: charger depuis index.json local
+                try {
+                    const fallbackResponse = await fetch('./data/projects/index.json');
+                    const fallbackData = await fallbackResponse.json();
+                    return fallbackData.projects || [];
+                } catch (fallbackError) {
+                    console.error('Erreur fallback:', fallbackError);
+                    return [];
+                }
+            }
+        }
+
+        function displayProjects(projects) {
+            const container = document.getElementById('projectsContainer');
+
+            if (projects.length === 0) {
+                container.innerHTML = `
+                    <div class="error">
+                        <i class="fas fa-folder-open"></i>
+                        <h3>Aucun projet trouvé</h3>
+                        <p>Aucun projet BIM n'est disponible pour le moment.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const projectsGrid = document.createElement('div');
+            projectsGrid.className = 'projects-grid';
+
+            projects.forEach(project => {
+                const card = createProjectCard(project);
+                projectsGrid.appendChild(card);
+            });
+
+            container.innerHTML = '';
+            container.appendChild(projectsGrid);
+        }
+
+        function createProjectCard(project) {
+            const card = document.createElement('div');
+            card.className = 'project-card';
+
+            const icon = projectIcons[project.id] || projectIcons.default;
+
+            card.innerHTML = `
+                <div class="project-header">
+                    <div class="project-icon">
+                        <i class="${icon}"></i>
+                    </div>
+                    <div class="project-info">
+                        <h3>${project.name}</h3>
+                        <div class="project-id">ID: ${project.id}</div>
+                    </div>
+                </div>
+                <div class="project-actions">
+                    <button class="action-btn primary" onclick="viewModel('${project.id}')">
+                        <i class="fas fa-eye"></i>
+                        Voir le modèle
+                    </button>
+                    <button class="action-btn primary" onclick="analyzeProject('${project.id}')">
+                        <i class="fas fa-chart-line"></i>
+                        Analyser Fichier
+                    </button>
+                    <button class="action-btn secondary" onclick="viewBlueprint('${project.id}')" disabled>
+                        <i class="fas fa-drafting-compass"></i>
+                        Voir blueprint
+                    </button>
+                </div>
+            `;
+
+            return card;
+        }
+
+        // Fonctions d'action
+        function viewModel(projectId) {
+            // 🔧 CORRECTION: Utiliser le bon chemin pour le viewer XeoKit (depuis la racine du serveur)
+            const viewerUrl = `http://localhost:8081/xeokit-bim-viewer/app/index.html?projectId=${projectId}`;
+            console.log(`🔍 Ouverture du viewer pour le projet: ${projectId} -> ${viewerUrl}`);
+            window.open(viewerUrl, '_blank');
+        }
+
+        function analyzeProject(projectId) {
+            // 🚀 Redirection vers l'analyse automatique du projet (Backend port 8000)
+            console.log(`🔍 Analyse du projet: ${projectId}`);
+
+            // Configuration du serveur unifié (port 8081)
+            const UNIFIED_SERVER_URL = 'http://localhost:8081';
+            const BACKEND_URL = UNIFIED_SERVER_URL; // Même serveur maintenant
+            const FRONTEND_URL = UNIFIED_SERVER_URL;
+
+            // Afficher un message de chargement
+            const loadingMsg = document.createElement('div');
+            loadingMsg.style.cssText = `
+                position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+                background: rgba(0,0,0,0.9); color: white; padding: 30px; border-radius: 15px;
+                z-index: 10000; text-align: center; font-size: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+                backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2);
+            `;
+            loadingMsg.innerHTML = `
+                <div style="font-size: 3rem; margin-bottom: 15px;">🤖</div>
+                <div style="font-size: 1.2rem; font-weight: bold; margin-bottom: 10px;">BIMEX Analyzer</div>
+                <div style="margin-bottom: 15px;">
+                    <i class="fas fa-spinner fa-spin" style="font-size: 1.5rem;"></i>
+                </div>
+                <div>Analyse du projet <strong>${projectId}</strong> en cours...</div>
+                <div style="font-size: 0.9rem; opacity: 0.8; margin-top: 10px;">
+                    Analyse sur serveur unifié...
+                </div>
+                <div style="margin-top: 15px; font-size: 0.8rem; opacity: 0.6;">
+                    Serveur unifié: ${UNIFIED_SERVER_URL}
+                </div>
+            `;
+            document.body.appendChild(loadingMsg);
+
+            // Vérifier si le backend est disponible et rediriger automatiquement
+            setTimeout(async () => {
+                try {
+                    // Tester si le backend est disponible
+                    const response = await fetch('http://localhost:8000/health', {
+                        method: 'GET',
+                        mode: 'cors'
+                    });
+
+                    if (response.ok) {
+                        // Backend disponible - Redirection automatique
+                        document.body.removeChild(loadingMsg);
+
+                        const successMsg = document.createElement('div');
+                        successMsg.style.cssText = loadingMsg.style.cssText;
+                        successMsg.innerHTML = `
+                            <div style="font-size: 3rem; margin-bottom: 15px;">✅</div>
+                            <div style="font-size: 1.2rem; font-weight: bold; margin-bottom: 10px;">Backend Détecté !</div>
+                            <div style="margin-bottom: 15px;">
+                                <i class="fas fa-rocket" style="font-size: 1.5rem;"></i>
+                            </div>
+                            <div>Redirection vers l'analyse du projet <strong>${projectId}</strong>...</div>
+                            <div style="font-size: 0.9rem; opacity: 0.8; margin-top: 10px;">
+                                Backend: http://localhost:8000 ✅
+                            </div>
+                        `;
+                        document.body.appendChild(successMsg);
+
+                        // Afficher le popup d'auto-analyse
+                        setTimeout(() => {
+                            showAutoAnalysisPopup(projectId);
+                        }, 1500);
+
+                    } else {
+                        throw new Error('Backend non disponible');
+                    }
+                } catch (error) {
+                    // Backend non disponible - Afficher les instructions
+                    document.body.removeChild(loadingMsg);
+
+                    alert(`🎯 Projet sélectionné: ${projectId}
+
+⚠️ Backend d'analyse non détecté sur le port 8000
+
+📋 Pour démarrer l'analyse:
+1. Ouvrez un terminal dans le dossier backend
+2. Exécutez: python -m uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+3. Puis cliquez à nouveau sur "Analyser Fichier"
+
+🔗 Ou utilisez directement: http://localhost:8000/analyze-project/${projectId}
+
+💡 Le backend doit être démarré pour l'analyse automatique !`);
+                }
+            }, 2000);
+        }
+
+        function viewBlueprint(projectId) {
+            // Fonctionnalité à implémenter plus tard
+            alert(`Fonctionnalité "Voir blueprint" pour ${projectId} - À venir prochainement !`);
+        }
+
+        // Animation des statistiques
+        function animateNumber(element, target) {
+            let current = 0;
+            const increment = target / 50;
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    current = target;
+                    clearInterval(timer);
+                }
+                element.textContent = Math.floor(current);
+            }, 30);
+        }
+
+        // Fonction de recherche
+        function setupSearch() {
+            const searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase();
+                const filteredProjects = allProjects.filter(project =>
+                    project.name.toLowerCase().includes(searchTerm) ||
+                    project.id.toLowerCase().includes(searchTerm)
+                );
+                displayProjects(filteredProjects);
+            });
+        }
+
+        // Configuration de l'API backend
+        const API_BASE_URL = 'http://localhost:8000';
+
+        // Fonctions pour le modal d'ajout de modèle
+        function openAddModelModal() {
+            document.getElementById('addModelModal').style.display = 'block';
+            document.getElementById('projectName').focus();
+        }
+
+        function closeAddModelModal() {
+            const modal = document.getElementById('addModelModal');
+            modal.style.display = 'none';
+
+            // Réinitialiser le formulaire
+            document.getElementById('addModelForm').reset();
+            document.getElementById('fileInputDisplay').innerHTML = `
+                <i class="fas fa-upload" style="margin-right: 10px; color: #667eea;"></i>
+                <span>Cliquez pour sélectionner un fichier IFC</span>
+            `;
+            document.getElementById('fileInputDisplay').classList.remove('has-file');
+            document.getElementById('progressContainer').style.display = 'none';
+            document.getElementById('submitBtn').disabled = false;
+        }
+
+        // Gestion du sélecteur de fichier
+        document.addEventListener('DOMContentLoaded', function() {
+            const fileInput = document.getElementById('ifcFile');
+            const fileDisplay = document.getElementById('fileInputDisplay');
+
+            fileInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    fileDisplay.innerHTML = `
+                        <i class="fas fa-file" style="margin-right: 10px; color: #4CAF50;"></i>
+                        <span>${file.name}</span>
+                    `;
+                    fileDisplay.classList.add('has-file');
+                } else {
+                    fileDisplay.innerHTML = `
+                        <i class="fas fa-upload" style="margin-right: 10px; color: #667eea;"></i>
+                        <span>Cliquez pour sélectionner un fichier IFC</span>
+                    `;
+                    fileDisplay.classList.remove('has-file');
+                }
+            });
+        });
+
+        // Gestion de la soumission du formulaire
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('addModelForm');
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                await handleModelUpload();
+            });
+        });
+
+        async function handleModelUpload() {
+            const projectName = document.getElementById('projectName').value.trim();
+            const fileInput = document.getElementById('ifcFile');
+            const file = fileInput.files[0];
+
+            if (!projectName || !file) {
+                alert('Veuillez remplir tous les champs');
+                return;
+            }
+
+            // Désactiver le bouton de soumission
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Traitement...';
+
+            // Afficher la barre de progression
+            const progressContainer = document.getElementById('progressContainer');
+            progressContainer.style.display = 'block';
+
+            try {
+                // Préparer les données du formulaire
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('project_name', projectName);
+
+                updateProgress(0, 'Envoi du fichier...');
+
+                // Envoyer le fichier au backend
+                const response = await fetch(`${API_BASE_URL}/upload-ifc`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.detail || 'Erreur lors de l\'upload');
+                }
+
+                const result = await response.json();
+                const conversionId = result.conversion_id;
+
+                updateProgress(10, 'Fichier envoyé, conversion en cours...');
+
+                // Suivre le progrès de la conversion
+                await trackConversionProgress(conversionId);
+
+            } catch (error) {
+                console.error('Erreur:', error);
+                updateProgress(0, `Erreur: ${error.message}`);
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Ajouter le modèle';
+
+                setTimeout(() => {
+                    progressContainer.style.display = 'none';
+                }, 3000);
+            }
+        }
+
+        async function trackConversionProgress(conversionId) {
+            const checkProgress = async () => {
+                try {
+                    const response = await fetch(`${API_BASE_URL}/conversion-status/${conversionId}`);
+                    if (!response.ok) {
+                        throw new Error('Erreur lors de la vérification du statut');
+                    }
+
+                    const status = await response.json();
+                    updateProgress(status.progress, status.message);
+
+                    if (status.status === 'completed') {
+                        updateProgress(100, 'Conversion terminée avec succès!');
+
+                        // Recharger la liste des projets
+                        setTimeout(async () => {
+                            await loadProjects();
+                            closeAddModelModal();
+                        }, 1500);
+
+                        return;
+                    } else if (status.status === 'failed') {
+                        throw new Error(status.message);
+                    }
+
+                    // Continuer à vérifier si la conversion est en cours (sans limite de temps)
+                    if (status.status === 'processing') {
+                        setTimeout(checkProgress, 1000); // Vérifier toutes les secondes
+                    }
+
+                } catch (error) {
+                    console.error('Erreur lors du suivi:', error);
+                    updateProgress(0, `Erreur: ${error.message}`);
+
+                    const submitBtn = document.getElementById('submitBtn');
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Ajouter le modèle';
+                }
+            };
+
+            checkProgress();
+        }
+
+        function updateProgress(percentage, message) {
+            const progressFill = document.getElementById('progressFill');
+            const progressText = document.getElementById('progressText');
+
+            progressFill.style.width = `${percentage}%`;
+            progressText.textContent = message;
+        }
+
+        // Fermer le modal en cliquant à l'extérieur
+        window.addEventListener('click', function(event) {
+            const modal = document.getElementById('addModelModal');
+            if (event.target === modal) {
+                closeAddModelModal();
+            }
+        });
+
+        function showAutoAnalysisPopup(projectId) {
+            // Créer le popup d'auto-analyse
+            const popup = document.createElement('div');
+            popup.id = 'autoAnalysisPopup';
+            popup.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.8);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 10000;
+                animation: fadeIn 0.3s ease;
+            `;
+
+            popup.innerHTML = `
+                <div style="
+                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                    padding: 40px;
+                    border-radius: 20px;
+                    max-width: 600px;
+                    width: 90%;
+                    text-align: center;
+                    color: white;
+                    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+                    animation: slideIn 0.5s ease;
+                ">
+                    <h2 style="margin-bottom: 20px; font-size: 2rem;">🤖 BIMEX Auto-Analyse</h2>
+                    <p style="margin-bottom: 30px; font-size: 1.2rem;">Analyse automatique du projet <strong>${projectId}</strong></p>
+
+                    <div id="analysisSteps" style="margin: 30px 0;">
+                        <div class="analysis-step" data-step="1">📁 Détection du fichier...</div>
+                        <div class="analysis-step" data-step="2">🔍 Analyse des données...</div>
+                        <div class="analysis-step" data-step="3">🚨 Détection d'anomalies...</div>
+                        <div class="analysis-step" data-step="4">🏢 Classification IA...</div>
+                        <div class="analysis-step" data-step="5">♿ Analyse PMR...</div>
+                        <div class="analysis-step" data-step="6">📄 Préparation du rapport...</div>
+                    </div>
+
+                    <div id="progressBar" style="
+                        width: 100%;
+                        height: 8px;
+                        background: rgba(255,255,255,0.3);
+                        border-radius: 4px;
+                        overflow: hidden;
+                        margin: 20px 0;
+                    ">
+                        <div id="progress" style="
+                            width: 0%;
+                            height: 100%;
+                            background: linear-gradient(90deg, #10b981, #34d399);
+                            transition: width 0.5s ease;
+                        "></div>
+                    </div>
+
+                    <p id="statusText" style="margin-top: 20px; font-size: 1rem; opacity: 0.9;">Initialisation...</p>
+                </div>
+            `;
+
+            // Ajouter les styles CSS pour les animations
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes fadeIn {
+                    from { opacity: 0; }
+                    to { opacity: 1; }
+                }
+                @keyframes slideIn {
+                    from { transform: translateY(-50px); opacity: 0; }
+                    to { transform: translateY(0); opacity: 1; }
+                }
+                .analysis-step {
+                    padding: 8px 0;
+                    opacity: 0.5;
+                    transition: all 0.3s ease;
+                    font-size: 1.1rem;
+                }
+                .analysis-step.active {
+                    opacity: 1;
+                    transform: scale(1.05);
+                    color: #34d399;
+                    font-weight: bold;
+                }
+                .analysis-step.completed {
+                    opacity: 0.8;
+                    color: #10b981;
+                }
+            `;
+            document.head.appendChild(style);
+            document.body.appendChild(popup);
+
+            // Démarrer l'animation d'analyse
+            startAutoAnalysisAnimation(projectId);
+        }
+
+        async function startAutoAnalysisAnimation(projectId) {
+            const steps = document.querySelectorAll('.analysis-step');
+            const progressBar = document.getElementById('progress');
+            const statusText = document.getElementById('statusText');
+
+            const statusTexts = [
+                'Détection du fichier géométrie...',
+                'Extraction des éléments BIM...',
+                'Recherche d\'anomalies...',
+                'Classification par intelligence artificielle...',
+                'Vérification de l\'accessibilité PMR...',
+                'Finalisation du rapport d\'analyse...'
+            ];
+
+            for (let i = 0; i < steps.length; i++) {
+                // Activer l'étape courante
+                steps[i].classList.add('active');
+                statusText.textContent = statusTexts[i];
+
+                // Mettre à jour la barre de progression
+                const progress = ((i + 1) / steps.length) * 100;
+                progressBar.style.width = progress + '%';
+
+                // Attendre 1.5 secondes
+                await new Promise(resolve => setTimeout(resolve, 1500));
+
+                // Marquer comme terminé
+                steps[i].classList.remove('active');
+                steps[i].classList.add('completed');
+            }
+
+            // Animation de fin
+            statusText.textContent = '✅ Analyse terminée ! Redirection vers l\'interface d\'analyse...';
+
+            // Attendre 2 secondes puis rediriger
+            setTimeout(() => {
+                // Fermer le popup
+                document.getElementById('autoAnalysisPopup').remove();
+
+                // Nettoyer le sessionStorage pour forcer la reconfiguration
+                sessionStorage.removeItem('autoModeConfigured');
+                sessionStorage.clear();
+
+                // Rediriger directement vers bim_analysis.html
+                window.location.href = `http://localhost:8000/analysis?project=${projectId}&auto=true&file_detected=true&step=detailed`;
+            }, 2000);
+        }
+
+        // Initialisation
+        window.onload = function() {
+            loadProjects();
+            setupSearch();
+        };
+    </script>
+</body>
+
+</html>

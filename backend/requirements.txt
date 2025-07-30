@@ -1,0 +1,34 @@
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+python-multipart==0.0.6
+# ifcopenshell - Problème de compatibilité Python 3.13
+# Solutions alternatives ci-dessous
+pandas==2.1.3
+numpy==1.25.2
+scikit-learn==1.3.2
+matplotlib==3.8.2
+seaborn==0.13.0
+plotly==5.17.0
+openai==1.3.7
+langchain==0.0.340
+langchain-openai==0.0.2
+streamlit==1.28.2
+dash==2.14.2
+dash-bootstrap-components==1.5.0
+reportlab==4.0.7
+fpdf2==2.7.6
+python-docx==1.1.0
+networkx==3.2.1
+scipy==1.11.4
+Pillow==10.1.0
+requests==2.31.0
+aiofiles==0.24.0
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+python-dotenv==1.0.0
+
+# Pour la génération PDF avec support JavaScript/Chart.js
+playwright==1.40.0
+nest-asyncio==1.5.8  # Pour compatibilité FastAPI + Playwright
+weasyprint==60.2  # Gardé comme fallback
+jinja2==3.1.2  # Pour les templates

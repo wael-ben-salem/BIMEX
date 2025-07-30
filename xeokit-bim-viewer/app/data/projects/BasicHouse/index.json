@@ -1,0 +1,22 @@
+{
+    "id": "BasicHouse",
+    "name": "BasicHouse",
+    "models": [
+        {
+            "id": "model",
+            "name": "BasicHouse Model"
+        }
+    ],
+    "viewerConfigs": {},
+    "viewerContent": {
+        "modelsLoaded": [
+            "model"
+        ]
+    },
+    "viewerState": {
+        "tabOpen": "classes",
+        "expandObjectsTree": 1,
+        "expandClassesTree": 1,
+        "expandStoreysTree": 1
+    }
+}

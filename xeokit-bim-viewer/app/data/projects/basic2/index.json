@@ -1,0 +1,22 @@
+{
+    "id": "basic2",
+    "name": "basic2",
+    "models": [
+        {
+            "id": "model",
+            "name": "basic2 Model"
+        }
+    ],
+    "viewerConfigs": {},
+    "viewerContent": {
+        "modelsLoaded": [
+            "model"
+        ]
+    },
+    "viewerState": {
+        "tabOpen": "classes",
+        "expandObjectsTree": 1,
+        "expandClassesTree": 1,
+        "expandStoreysTree": 1
+    }
+}

@@ -1,0 +1,76 @@
+{
+  "name": "@xeokit/xeokit-bim-viewer",
+  "version": "2.7.1",
+  "type": "module",
+  "description": "BIM viewer built on xeokit",
+  "main": "dist/xeokit-bim-viewer.min.es.js",
+  "files": [
+    "/dist/xeokit-bim-viewer.min.es.js",
+    "/dist/xeokit-bim-viewer.es.js",
+    "/dist/xeokit-bim-viewer.css",
+    "/dist/messages.js"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "rollup --config rollup.config.js && rollup --config rollup.dev.config.js && copyfiles -f locales/messages.js ./dist && copyfiles -f xeokit-bim-viewer.css ./dist",
+    "docs": "./node_modules/.bin/esdoc",
+    "serve": "http-server . -p 8080 ",
+    "changelog": "auto-changelog --commit-limit false --package --template changelog-template.hbs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xeokit/xeokit-bim-viewer.git"
+  },
+  "auto-changelog": {
+    "output": "CHANGELOG.md",
+    "template": "keepachangelog",
+    "unreleased": true,
+    "commitLimit": false
+  },
+  "keywords": [
+    "ifc-viewer",
+    "bim-viewer",
+    "3d-web-viewer",
+    "point-cloud-viewer",
+    "online-viewer",
+    "web-gl",
+    "viewer-sdk",
+    "3d-viewers",
+    "bim",
+    "ifc",
+    "geometry",
+    "point-cloud",
+    "las-viewer",
+    "laz-viewer",
+    "OpenProject",
+    "webgl-viewer",
+    "javascript-viewer",
+    "buildingsmart",
+    "geospatial",
+    "gis",
+    "3d-tiles"
+  ],
+  "author": "Lindsay Kay",
+  "license": "AGPL-3.0 license",
+  "bugs": {
+    "url": "https://github.com/xeokit/xeokit-bim-viewer/issues"
+  },
+  "homepage": "https://github.com/xeokit/xeokit-bim-viewer#readme",
+  "devDependencies": {
+    "@rollup/plugin-node-resolve": "^16.0.1",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-url": "^8.0.2",
+    "auto-changelog": "^2.4.0",
+    "autoprefixer": "^9.8.6",
+    "copyfiles": "^2.4.1",
+    "esdoc": "^1.1.0",
+    "esdoc-standard-plugin": "^1.0.0",
+    "rollup": "^4.39.0",
+    "rollup-plugin-import-css": "^3.5.8"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^6.7.2",
+    "@xeokit/xeokit-sdk": "^2.6.78",
+    "http-server": "^13.0.2"
+  }
+}
