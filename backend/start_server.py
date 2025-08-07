@@ -35,8 +35,8 @@ def check_node_dependencies():
 def start_server():
     """Démarre le serveur FastAPI"""
     print("Démarrage du serveur FastAPI...")
-    print("Le serveur sera accessible sur: http://localhost:8000")
-    print("Documentation API: http://localhost:8000/docs")
+    print("Le serveur sera accessible sur: http://localhost:8001")
+    print("Documentation API: http://localhost:8001/docs")
     print("\nPour arrêter le serveur, appuyez sur Ctrl+C")
     print("-" * 50)
     
@@ -45,7 +45,7 @@ def start_server():
             sys.executable, "-m", "uvicorn", 
             "main:app", 
             "--host", "0.0.0.0", 
-            "--port", "8000", 
+            "--port", "8001", 
             "--reload"
         ])
     except KeyboardInterrupt:
