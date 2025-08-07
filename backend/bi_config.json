@@ -1,0 +1,47 @@
+{
+  "connectors": [
+    {
+      "name": "Apache_Superset",
+      "type": "superset",
+      "endpoint": "http://localhost:8088/api/v1",
+      "credentials": {
+        "username": "admin",
+        "password": "admin"
+      },
+      "active": true,
+      "last_sync": null
+    },
+    {
+      "name": "IFCjs_Viewer",
+      "type": "ifc_viewer",
+      "endpoint": "http://localhost:3000",
+      "credentials": {
+        "access": "public"
+      },
+      "active": true,
+      "last_sync": null
+    },
+    {
+      "name": "n8n_Workflows",
+      "type": "n8n",
+      "endpoint": "http://localhost:5678/webhook/test-webhook",
+      "credentials": {
+        "webhook_id": "test-webhook",
+        "api_key": "admin"
+      },
+      "active": true,
+      "last_sync": null
+    },
+    {
+      "name": "ERPNext",
+      "type": "erp",
+      "endpoint": "http://localhost:8000/api",
+      "credentials": {
+        "username": "admin",
+        "password": "admin"
+      },
+      "active": true,
+      "last_sync": null
+    }
+  ]
+}

@@ -1000,6 +1000,357 @@
             </div>
         </div>
 
+        <!-- 🔮 NOUVELLES SECTIONS DATA SCIENCE -->
+
+        <!-- Section Prédiction des Coûts IA -->
+        {% if cost_data %}
+        <div style="page-break-before: always;"></div>
+        <div class="card" style="border-left: 4px solid #f093fb;">
+            <h3><i class="fas fa-coins" style="color: #f093fb;"></i> 🔮 Prédiction Intelligente des Coûts IA</h3>
+            <p style="color: #6b7280; margin-bottom: 20px;">Analyse IA • Machine Learning • Prédictions Dynamiques Basées sur le Modèle IFC</p>
+
+            <!-- Métriques principales -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px;">
+                <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 20px; border-radius: 12px; text-align: center;">
+                    <h4 style="margin: 0 0 10px 0; font-size: 1.1em;">💰 Coût Total Estimé</h4>
+                    <div style="font-size: 2em; font-weight: bold; margin-bottom: 5px;">{{ "{:,.0f}".format(total_cost) }} €</div>
+                    <div style="font-size: 0.9em; opacity: 0.9;">Confiance IA: {{ "{:.0f}".format(cost_confidence * 100) }}%</div>
+                </div>
+
+                <div style="background: #ffffff; border: 2px solid #f093fb; padding: 20px; border-radius: 12px; text-align: center;">
+                    <h4 style="margin: 0 0 10px 0; font-size: 1.1em; color: #f093fb;">📐 Coût par m²</h4>
+                    <div style="font-size: 2em; font-weight: bold; margin-bottom: 5px; color: #333;">{{ "{:.0f}".format(cost_per_m2) }} €/m²</div>
+                    <div style="font-size: 0.9em; color: #666;">Basé sur {{ total_floor_area }} m²</div>
+                </div>
+
+                <div style="background: #ffffff; border: 2px solid #10b981; padding: 20px; border-radius: 12px; text-align: center;">
+                    <h4 style="margin: 0 0 10px 0; font-size: 1.1em; color: #10b981;">🏗️ Éléments Analysés</h4>
+                    <div style="font-size: 2em; font-weight: bold; margin-bottom: 5px; color: #333;">{{ total_elements }}</div>
+                    <div style="font-size: 0.9em; color: #666;">Éléments IFC</div>
+                </div>
+            </div>
+
+            <!-- Répartition des coûts -->
+            <h4 style="color: #f093fb; margin-bottom: 15px;">📊 Répartition Détaillée des Coûts</h4>
+            <div style="overflow-x: auto; margin-bottom: 20px;">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background: #fdf2f8;">
+                            <th style="padding: 12px; text-align: left; border: 1px solid #e5e7eb;">Catégorie</th>
+                            <th style="padding: 12px; text-align: center; border: 1px solid #e5e7eb;">Coût (€)</th>
+                            <th style="padding: 12px; text-align: center; border: 1px solid #e5e7eb;">Pourcentage</th>
+                            <th style="padding: 12px; text-align: center; border: 1px solid #e5e7eb;">Visualisation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for category, material_data in materials_cost.items() %}
+                        <tr>
+                            <td style="padding: 12px; border: 1px solid #e5e7eb;">
+                                <i class="fas fa-{% if category == 'concrete' %}building{% elif category == 'steel' %}industry{% elif category == 'wood' %}tree{% elif category == 'labor' %}users{% elif category == 'equipment' %}tools{% else %}box{% endif %}" style="margin-right: 8px; color: #f093fb;"></i>
+                                <span style="text-transform: capitalize;">{{ category | replace('_', ' ') }}</span>
+                            </td>
+                            <td style="padding: 12px; text-align: center; border: 1px solid #e5e7eb; font-weight: bold;">{{ "{:,.0f}".format(material_data.cost) }}</td>
+                            <td style="padding: 12px; text-align: center; border: 1px solid #e5e7eb;">{{ "{:.1f}".format(material_data.percentage) }}%</td>
+                            <td style="padding: 12px; text-align: center; border: 1px solid #e5e7eb;">
+                                <div style="background: #f3f4f6; height: 8px; border-radius: 4px; overflow: hidden;">
+                                    <div style="background: linear-gradient(90deg, #f093fb, #f5576c); height: 100%; width: {{ "{:.1f}".format(material_data.percentage) }}%;"></div>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Recommandations d'optimisation des coûts -->
+            <div style="background: #fef7ff; padding: 20px; border-radius: 10px;">
+                <h4 style="color: #a855f7; margin-bottom: 15px;">💡 Recommandations Personnalisées d'Optimisation</h4>
+                {% for recommendation in cost_recommendations %}
+                <div style="padding: 15px; background: white; border-left: 4px solid #f093fb; margin-bottom: 15px; border-radius: 0 8px 8px 0;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <strong style="color: #333;">{{ loop.index }}.
+                        {% if recommendation is mapping %}
+                            {{ recommendation.title if recommendation.title else recommendation.get('description', 'Recommandation') }}
+                        {% else %}
+                            {{ recommendation }}
+                        {% endif %}
+                        </strong>
+                        {% if recommendation is mapping and recommendation.co2_reduction %}
+                        <span style="background: #10b981; color: white; padding: 4px 8px; border-radius: 12px; font-size: 0.8em;">
+                            -{{ recommendation.co2_reduction }} kg CO₂/an
+                        </span>
+                        {% endif %}
+                    </div>
+                    {% if recommendation is mapping and recommendation.type %}
+                    <div style="color: #6b7280; font-size: 0.9em;">
+                        <i class="fas fa-tag" style="margin-right: 5px;"></i>{{ recommendation.type }}
+                        {% if recommendation.priority %}• Priorité: {{ recommendation.priority }}{% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Section Optimisation Automatique IA -->
+        {% if optimization_data %}
+        <div style="page-break-before: always;"></div>
+        <div class="card" style="border-left: 4px solid #8b5cf6;">
+            <h3><i class="fas fa-robot" style="color: #8b5cf6;"></i> ⚡ Optimisation Automatique IA</h3>
+            <p style="color: #6b7280; margin-bottom: 20px;">Intelligence Artificielle • Algorithmes Génétiques • Optimisation Multi-Objectifs</p>
+
+            <!-- Métriques d'optimisation principales -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px;">
+                <div style="background: linear-gradient(135deg, #8b5cf6 0%, #3b82f6 100%); color: white; padding: 20px; border-radius: 12px; text-align: center;">
+                    <h4 style="margin: 0 0 10px 0; font-size: 1.1em;">🎯 Score d'Optimisation</h4>
+                    <div style="font-size: 2em; font-weight: bold; margin-bottom: 5px;">{{ optimization_score }}/100</div>
+                    <div style="font-size: 0.9em; opacity: 0.9;">Potentiel d'amélioration</div>
+                </div>
+
+                <div style="background: #ffffff; border: 2px solid #8b5cf6; padding: 20px; border-radius: 12px; text-align: center;">
+                    <h4 style="margin: 0 0 10px 0; font-size: 1.1em; color: #8b5cf6;">💰 Économies Potentielles</h4>
+                    <div style="font-size: 2em; font-weight: bold; margin-bottom: 5px; color: #333;">{{ potential_savings }}%</div>
+                    <div style="font-size: 0.9em; color: #666;">Réduction des coûts</div>
+                </div>
+
+                <div style="background: #ffffff; border: 2px solid #10b981; padding: 20px; border-radius: 12px; text-align: center;">
+                    <h4 style="margin: 0 0 10px 0; font-size: 1.1em; color: #10b981;">🔧 Recommandations</h4>
+                    <div style="font-size: 2em; font-weight: bold; margin-bottom: 5px; color: #333;">{{ optimization_recommendations }}</div>
+                    <div style="font-size: 0.9em; color: #666;">Optimisations identifiées</div>
+                </div>
+            </div>
+
+            <!-- Données de coûts cohérentes -->
+            {% if construction_costs %}
+            <h4 style="color: #8b5cf6; margin-bottom: 15px;">💼 Base de Coûts Analysée (Cohérent avec Prédiction IA)</h4>
+            <div style="background: #f8fafc; padding: 20px; border-radius: 10px; margin-bottom: 20px; border: 2px solid #e2e8f0;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; font-weight: bold; color: #3b82f6;">€{{ "{:,.0f}".format(construction_costs.total_estimated_cost) }}</div>
+                        <div style="font-size: 0.9em; color: #666;">Coût Total</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; font-weight: bold; color: #10b981;">€{{ construction_costs.cost_per_m2 }}</div>
+                        <div style="font-size: 0.9em; color: #666;">Coût par m²</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; font-weight: bold; color: #f59e0b;">{{ "{:.0f}".format(construction_costs.confidence * 100) }}%</div>
+                        <div style="font-size: 0.9em; color: #666;">Confiance IA</div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Algorithmes IA utilisés -->
+            {% if ml_optimization %}
+            <h4 style="color: #8b5cf6; margin-bottom: 15px;">🧠 Algorithmes d'Intelligence Artificielle</h4>
+            <div style="background: #faf5ff; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                    <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #8b5cf6;">
+                        <h5 style="margin: 0 0 10px 0; color: #8b5cf6;">🎯 Optimisation Pareto</h5>
+                        <div style="font-size: 1.2em; font-weight: bold; color: #333;">{{ ml_optimization.pareto_solutions }} Solutions</div>
+                        <div style="font-size: 0.9em; color: #666;">Multi-objectifs NSGA-II</div>
+                    </div>
+                    <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #10b981;">
+                        <h5 style="margin: 0 0 10px 0; color: #10b981;">⚡ Efficacité Algorithme</h5>
+                        <div style="font-size: 1.2em; font-weight: bold; color: #333;">{{ ml_optimization.algorithm_efficiency }}%</div>
+                        <div style="font-size: 0.9em; color: #666;">Performance IA</div>
+                    </div>
+                    <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #f59e0b;">
+                        <h5 style="margin: 0 0 10px 0; color: #f59e0b;">🎯 Objectifs Optimisés</h5>
+                        <div style="font-size: 1.2em; font-weight: bold; color: #333;">{{ ml_optimization.optimized_objectives }}</div>
+                        <div style="font-size: 0.9em; color: #666;">Critères simultanés</div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <!-- Section Analyse Environnementale -->
+        {% if environmental_data %}
+        <div style="page-break-before: always;"></div>
+        <div class="card" style="border-left: 4px solid #43e97b;">
+            <h3><i class="fas fa-leaf" style="color: #43e97b;"></i> 🌱 Analyse Environnementale & Durabilité</h3>
+            <p style="color: #6b7280; margin-bottom: 20px;">Empreinte Carbone • Durabilité • Optimisations Écologiques</p>
+
+            <!-- Métriques environnementales principales -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px;">
+                <div style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); color: white; padding: 20px; border-radius: 12px; text-align: center;">
+                    <h4 style="margin: 0 0 10px 0; font-size: 1.1em;">🌍 Empreinte Carbone</h4>
+                    <div style="font-size: 2em; font-weight: bold; margin-bottom: 5px;">{{ "{:,.1f}".format(carbon_footprint) }} tonnes</div>
+                    <div style="font-size: 0.9em; opacity: 0.9;">CO₂ équivalent</div>
+                </div>
+
+                <div style="background: #ffffff; border: 2px solid #43e97b; padding: 20px; border-radius: 12px; text-align: center;">
+                    <h4 style="margin: 0 0 10px 0; font-size: 1.1em; color: #43e97b;">⭐ Score Durabilité</h4>
+                    <div style="font-size: 2em; font-weight: bold; margin-bottom: 5px; color: #333;">{{ sustainability_score }}/10</div>
+                    <div style="font-size: 0.9em; color: #666;">Classe {{ energy_efficiency }}</div>
+                </div>
+
+                <div style="background: #ffffff; border: 2px solid #38f9d7; padding: 20px; border-radius: 12px; text-align: center;">
+                    <h4 style="margin: 0 0 10px 0; font-size: 1.1em; color: #38f9d7;">☀️ Potentiel Solaire</h4>
+                    <div style="font-size: 2em; font-weight: bold; margin-bottom: 5px; color: #333;">{{ renewable_energy }}%</div>
+                    <div style="font-size: 0.9em; color: #666;">Énergie renouvelable</div>
+                </div>
+            </div>
+
+            <!-- Certifications environnementales -->
+            <h4 style="color: #43e97b; margin-bottom: 15px;">🏆 Certifications Environnementales</h4>
+            <div style="background: #f0fdf4; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                    {% for certification in environmental_certifications %}
+                    <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #43e97b; text-align: center;">
+                        <div style="font-size: 1.2em; font-weight: bold; color: #059669; margin-bottom: 5px;">{{ certification }}</div>
+                        <div style="font-size: 0.9em; color: #666;">Éligible</div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Recommandations environnementales -->
+            <div style="background: #ecfdf5; padding: 20px; border-radius: 10px;">
+                <h4 style="color: #059669; margin-bottom: 15px;">🌱 Recommandations Personnalisées d'Amélioration</h4>
+                {% for recommendation in environmental_recommendations %}
+                <div style="padding: 15px; background: white; border-left: 4px solid #43e97b; margin-bottom: 15px; border-radius: 0 8px 8px 0;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <strong style="color: #059669;">{{ recommendation.title if recommendation.title else recommendation }}</strong>
+                        {% if recommendation.priority %}
+                        <span style="background: {% if recommendation.priority == 'High' %}#fecaca{% elif recommendation.priority == 'Medium' %}#fef3c7{% else %}#d1fae5{% endif %}; color: {% if recommendation.priority == 'High' %}#991b1b{% elif recommendation.priority == 'Medium' %}#92400e{% else %}#065f46{% endif %}; padding: 2px 8px; border-radius: 12px; font-size: 0.8em;">{{ recommendation.priority }}</span>
+                        {% endif %}
+                    </div>
+                    {% if recommendation.type %}
+                    <p style="margin: 8px 0; color: #6b7280; font-size: 0.9em;">{{ recommendation.type }}</p>
+                    {% endif %}
+                    <div style="display: flex; gap: 20px; font-size: 0.85em; color: #666; margin-top: 8px;">
+                        {% if recommendation.co2_reduction %}
+                        <span><i class="fas fa-leaf"></i> -{{ recommendation.co2_reduction }} kg CO₂/an</span>
+                        {% endif %}
+                        <span><i class="fas fa-building"></i> Basé sur l'analyse du modèle IFC</span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Section Optimisation IA -->
+        {% if ai_optimization %}
+        <div style="page-break-before: always;"></div>
+        <div class="card" style="border-left: 4px solid #fa709a;">
+            <h3><i class="fas fa-magic" style="color: #fa709a;"></i> ⚡ Optimisation Automatique avec IA</h3>
+            <p style="color: #6b7280; margin-bottom: 20px;">Intelligence Artificielle • Recommandations Avancées • Optimisations Structurelles</p>
+
+            <!-- Métriques d'optimisation principales -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px;">
+                <div style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); color: white; padding: 20px; border-radius: 12px; text-align: center;">
+                    <h4 style="margin: 0 0 10px 0; font-size: 1.1em;">🎯 Recommandations IA</h4>
+                    <div style="font-size: 2em; font-weight: bold; margin-bottom: 5px;">{{ ai_optimization.total_recommendations }}</div>
+                    <div style="font-size: 0.9em; opacity: 0.9;">Optimisations identifiées</div>
+                </div>
+
+                <div style="background: #ffffff; border: 2px solid #fa709a; padding: 20px; border-radius: 12px; text-align: center;">
+                    <h4 style="margin: 0 0 10px 0; font-size: 1.1em; color: #fa709a;">💰 Économies Potentielles</h4>
+                    <div style="font-size: 2em; font-weight: bold; margin-bottom: 5px; color: #333;">{{ "{:,.0f}".format(ai_optimization.cost_benefit_analysis.total_annual_savings) }} €</div>
+                    <div style="font-size: 0.9em; color: #666;">Par an</div>
+                </div>
+
+                <div style="background: #ffffff; border: 2px solid #fee140; padding: 20px; border-radius: 12px; text-align: center;">
+                    <h4 style="margin: 0 0 10px 0; font-size: 1.1em; color: #d97706;">⚡ Économies Énergétiques</h4>
+                    <div style="font-size: 2em; font-weight: bold; margin-bottom: 5px; color: #333;">{{ "{:,.0f}".format(ai_optimization.energy_optimization.total_energy_savings) }}</div>
+                    <div style="font-size: 0.9em; color: #666;">kWh/an</div>
+                </div>
+
+                <div style="background: #ffffff; border: 2px solid #10b981; padding: 20px; border-radius: 12px; text-align: center;">
+                    <h4 style="margin: 0 0 10px 0; font-size: 1.1em; color: #10b981;">⏱️ ROI</h4>
+                    <div style="font-size: 2em; font-weight: bold; margin-bottom: 5px; color: #333;">{{ "{:.1f}".format(ai_optimization.cost_benefit_analysis.payback_period) }}</div>
+                    <div style="font-size: 0.9em; color: #666;">ans</div>
+                </div>
+            </div>
+
+            <!-- Optimisations par catégorie -->
+            <h4 style="color: #fa709a; margin-bottom: 15px;">🏗️ Optimisations par Catégorie</h4>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px;">
+                {% if ai_optimization.structural_optimization %}
+                <div style="background: #fef7ff; border: 1px solid #e879f9; padding: 20px; border-radius: 12px;">
+                    <h5 style="color: #a855f7; margin-bottom: 10px;"><i class="fas fa-building"></i> Optimisation Structurelle</h5>
+                    <p style="margin: 5px 0; font-size: 0.9em;">Économies matériaux: <strong>{{ "{:,.0f}".format(ai_optimization.structural_optimization.total_material_savings) }} €</strong></p>
+                    <p style="margin: 5px 0; font-size: 0.9em;">Potentiel: <strong>{{ ai_optimization.structural_optimization.optimization_potential }}</strong></p>
+                </div>
+                {% endif %}
+
+                {% if ai_optimization.lighting_optimization %}
+                <div style="background: #fffbeb; border: 1px solid #fbbf24; padding: 20px; border-radius: 12px;">
+                    <h5 style="color: #d97706; margin-bottom: 10px;"><i class="fas fa-lightbulb"></i> Éclairage Naturel</h5>
+                    <p style="margin: 5px 0; font-size: 0.9em;">Ratio optimal: <strong>{{ "{:.0f}".format(ai_optimization.lighting_optimization.optimal_window_ratio * 100) }}%</strong></p>
+                    <p style="margin: 5px 0; font-size: 0.9em;">Amélioration: <strong>{{ "{:.0f}".format(ai_optimization.lighting_optimization.daylight_factor_improvement * 100) }}%</strong></p>
+                </div>
+                {% endif %}
+
+                {% if ai_optimization.thermal_optimization %}
+                <div style="background: #f0fdf4; border: 1px solid #22c55e; padding: 20px; border-radius: 12px;">
+                    <h5 style="color: #16a34a; margin-bottom: 10px;"><i class="fas fa-thermometer-half"></i> Performance Thermique</h5>
+                    <p style="margin: 5px 0; font-size: 0.9em;">Améliorations: <strong>{{ ai_optimization.thermal_optimization.thermal_improvements|length }}</strong></p>
+                    <p style="margin: 5px 0; font-size: 0.9em;">Gain global: <strong>{{ "{:.0f}".format(ai_optimization.thermal_optimization.overall_thermal_improvement * 100) }}%</strong></p>
+                </div>
+                {% endif %}
+
+                {% if ai_optimization.energy_optimization %}
+                <div style="background: #eff6ff; border: 1px solid #3b82f6; padding: 20px; border-radius: 12px;">
+                    <h5 style="color: #2563eb; margin-bottom: 10px;"><i class="fas fa-plug"></i> Systèmes Énergétiques</h5>
+                    <p style="margin: 5px 0; font-size: 0.9em;">Économies: <strong>{{ "{:,.0f}".format(ai_optimization.energy_optimization.total_cost_savings) }} €</strong></p>
+                    <p style="margin: 5px 0; font-size: 0.9em;">Renouvelable: <strong>{{ "{:,.0f}".format(ai_optimization.energy_optimization.renewable_integration.total_renewable_capacity) }} kWh</strong></p>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Feuille de route d'implémentation -->
+            <h4 style="color: #fa709a; margin-bottom: 15px;">🗺️ Feuille de Route d'Implémentation</h4>
+            <div style="background: #fef7ff; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                {% for phase in ai_optimization.implementation_roadmap %}
+                <div style="background: white; border-left: 4px solid #fa709a; padding: 15px; margin-bottom: 15px; border-radius: 0 8px 8px 0;">
+                    <div style="display: flex; justify-content: between; align-items: center; margin-bottom: 10px;">
+                        <h5 style="margin: 0; color: #a855f7;">{{ phase.phase }}</h5>
+                        <span style="background: #fa709a; color: white; padding: 4px 12px; border-radius: 12px; font-size: 0.85em;">{{ phase.duration }}</span>
+                    </div>
+                    <ul style="margin: 10px 0; padding-left: 20px;">
+                        {% for recommendation in phase.recommendations %}
+                        <li style="margin: 5px 0; color: #666;">{{ recommendation }}</li>
+                        {% endfor %}
+                    </ul>
+                    <div style="text-align: right; font-weight: bold; color: #a855f7;">
+                        Coût estimé: {{ "{:,.0f}".format(phase.total_cost) }} €
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Recommandations prioritaires -->
+            <div style="background: #fef2f2; padding: 20px; border-radius: 10px;">
+                <h4 style="color: #dc2626; margin-bottom: 15px;">⭐ Recommandations Prioritaires</h4>
+                {% for recommendation in ai_optimization.prioritized_recommendations[:5] %}
+                <div style="display: flex; align-items: flex-start; gap: 15px; background: white; padding: 15px; margin-bottom: 15px; border-radius: 8px; border-left: 4px solid {% if recommendation.priority == 'High' %}#dc2626{% elif recommendation.priority == 'Medium' %}#f59e0b{% else %}#10b981{% endif %};">
+                    <div style="background: {% if recommendation.priority == 'High' %}#dc2626{% elif recommendation.priority == 'Medium' %}#f59e0b{% else %}#10b981{% endif %}; color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0;">{{ loop.index }}</div>
+                    <div style="flex: 1;">
+                        <h6 style="margin: 0 0 8px 0; color: #333;">{{ recommendation.recommendation }}</h6>
+                        <div style="display: flex; gap: 15px; margin-bottom: 8px; font-size: 0.85em;">
+                            <span style="background: #dbeafe; color: #1e40af; padding: 2px 8px; border-radius: 12px;">Impact: {{ "{:.1f}".format(recommendation.impact_score) }}/10</span>
+                            <span style="background: {% if recommendation.difficulty == 'Easy' %}#d1fae5{% elif recommendation.difficulty == 'Medium' %}#fef3c7{% else %}#fecaca{% endif %}; color: {% if recommendation.difficulty == 'Easy' %}#065f46{% elif recommendation.difficulty == 'Medium' %}#92400e{% else %}#991b1b{% endif %}; padding: 2px 8px; border-radius: 12px;">{{ recommendation.difficulty }}</span>
+                            <span style="background: {% if recommendation.priority == 'High' %}#fecaca{% elif recommendation.priority == 'Medium' %}#fef3c7{% else %}#d1fae5{% endif %}; color: {% if recommendation.priority == 'High' %}#991b1b{% elif recommendation.priority == 'Medium' %}#92400e{% else %}#065f46{% endif %}; padding: 2px 8px; border-radius: 12px;">{{ recommendation.priority }}</span>
+                        </div>
+                        <div style="display: flex; gap: 15px; font-size: 0.85em; color: #666;">
+                            <span><i class="fas fa-bolt"></i> {{ "{:,.0f}".format(recommendation.energy_savings) }} kWh/an</span>
+                            <span><i class="fas fa-leaf"></i> -{{ "{:.0f}".format(recommendation.co2_reduction) }} kg CO₂/an</span>
+                            <span><i class="fas fa-clock"></i> {{ "{:.1f}".format(recommendation.payback_period) }} ans</span>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
         <!-- ANNEXES TECHNIQUES BIMEX -->
         <div style="page-break-before: always;"></div>
         <div class="card" style="border-left: 4px solid #8b5cf6;">

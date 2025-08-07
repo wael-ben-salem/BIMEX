@@ -1,0 +1,210 @@
+version: '3.8'
+
+services:
+  # N8N - Workflow Automation
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: bimex-n8n
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=admin
+      - N8N_BASIC_AUTH_PASSWORD=bimex2024
+      - N8N_HOST=localhost
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=http
+      - WEBHOOK_URL=http://localhost:5678/
+    volumes:
+      - n8n_data:/home/node/.n8n
+      - ./n8n/workflows:/home/node/.n8n/workflows
+    restart: unless-stopped
+    networks:
+      - bimex-network
+
+  # Apache Superset - Data Visualization
+  superset:
+    image: apache/superset:latest
+    container_name: bimex-superset
+    ports:
+      - "8088:8088"
+    environment:
+      - SUPERSET_SECRET_KEY=bimex_superset_secret_key_2024
+      - SUPERSET_CONFIG_PATH=/app/superset_config.py
+    volumes:
+      - superset_data:/app/superset_home
+      - ./config/superset_config.py:/app/superset_config.py
+    command: >
+      bash -c "
+        superset db upgrade &&
+        superset fab create-admin --username admin --firstname Admin --lastname User --email admin@bimex.com --password bimex2024 &&
+        superset init &&
+        superset run -h 0.0.0.0 -p 8088
+      "
+    restart: unless-stopped
+    networks:
+      - bimex-network
+
+  # Apache Airflow - Workflow Orchestration
+  airflow-webserver:
+    image: apache/airflow:2.7.0
+    container_name: bimex-airflow-webserver
+    ports:
+      - "8080:8080"
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres:5432/airflow
+      - AIRFLOW__CORE__FERNET_KEY=bimex_airflow_fernet_key_2024_very_long_key
+      - AIRFLOW__WEBSERVER__SECRET_KEY=bimex_airflow_secret_key_2024
+      - AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION=true
+      - AIRFLOW__CORE__LOAD_EXAMPLES=false
+      - AIRFLOW__API__AUTH_BACKENDS=airflow.api.auth.backend.basic_auth
+    volumes:
+      - airflow_data:/opt/airflow
+      - ./airflow/dags:/opt/airflow/dags
+      - ./airflow/logs:/opt/airflow/logs
+      - ./airflow/plugins:/opt/airflow/plugins
+    command: webserver
+    depends_on:
+      - postgres
+    restart: unless-stopped
+    networks:
+      - bimex-network
+
+  airflow-scheduler:
+    image: apache/airflow:2.7.0
+    container_name: bimex-airflow-scheduler
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres:5432/airflow
+      - AIRFLOW__CORE__FERNET_KEY=bimex_airflow_fernet_key_2024_very_long_key
+      - AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION=true
+      - AIRFLOW__CORE__LOAD_EXAMPLES=false
+    volumes:
+      - airflow_data:/opt/airflow
+      - ./airflow/dags:/opt/airflow/dags
+      - ./airflow/logs:/opt/airflow/logs
+      - ./airflow/plugins:/opt/airflow/plugins
+    command: scheduler
+    depends_on:
+      - postgres
+    restart: unless-stopped
+    networks:
+      - bimex-network
+
+  # Grafana - Monitoring and Alerting
+  grafana:
+    image: grafana/grafana:latest
+    container_name: bimex-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=bimex2024
+      - GF_INSTALL_PLUGINS=grafana-piechart-panel,grafana-worldmap-panel
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./config/grafana:/etc/grafana/provisioning
+    restart: unless-stopped
+    networks:
+      - bimex-network
+
+  # Metabase - Business Intelligence
+  metabase:
+    image: metabase/metabase:latest
+    container_name: bimex-metabase
+    ports:
+      - "3001:3000"
+    environment:
+      - MB_DB_TYPE=postgres
+      - MB_DB_DBNAME=metabase
+      - MB_DB_PORT=5432
+      - MB_DB_USER=metabase
+      - MB_DB_PASS=metabase
+      - MB_DB_HOST=postgres
+    volumes:
+      - metabase_data:/metabase-data
+    depends_on:
+      - postgres
+    restart: unless-stopped
+    networks:
+      - bimex-network
+
+  # JupyterHub - Data Science Platform
+  jupyterhub:
+    image: jupyterhub/jupyterhub:latest
+    container_name: bimex-jupyterhub
+    ports:
+      - "8888:8000"
+    environment:
+      - JUPYTERHUB_CRYPT_KEY=bimex_jupyter_crypt_key_2024_very_long_key
+    volumes:
+      - jupyterhub_data:/srv/jupyterhub
+      - ./config/jupyterhub_config.py:/srv/jupyterhub/jupyterhub_config.py
+      - ./notebooks:/home/jovyan/work
+    command: jupyterhub -f /srv/jupyterhub/jupyterhub_config.py
+    restart: unless-stopped
+    networks:
+      - bimex-network
+
+  # PostgreSQL - Database for Airflow and Metabase
+  postgres:
+    image: postgres:13
+    container_name: bimex-postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=bimex2024
+      - POSTGRES_DB=postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    restart: unless-stopped
+    networks:
+      - bimex-network
+
+  # Redis - Cache and Message Broker
+  redis:
+    image: redis:7-alpine
+    container_name: bimex-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    networks:
+      - bimex-network
+
+  # Nginx - Reverse Proxy
+  nginx:
+    image: nginx:alpine
+    container_name: bimex-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./config/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./config/nginx/ssl:/etc/nginx/ssl
+    depends_on:
+      - n8n
+      - superset
+      - airflow-webserver
+      - grafana
+      - metabase
+      - jupyterhub
+    restart: unless-stopped
+    networks:
+      - bimex-network
+
+volumes:
+  n8n_data:
+  superset_data:
+  airflow_data:
+  grafana_data:
+  metabase_data:
+  jupyterhub_data:
+  postgres_data:
+  redis_data:
+
+networks:
+  bimex-network:
+    driver: bridge
