@@ -9,8 +9,8 @@
     <!-- 🔧 CORRECTION: Utiliser des chemins absoluts pour éviter les conflits de port -->
     <!-- 🔧 CORRECTION FINALE: Utiliser uniquement le CDN FontAwesome pour éviter tous les conflits -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" type="text/css" />
-    <link rel="stylesheet" href="http://localhost:8081/xeokit-bim-viewer/dist/xeokit-bim-viewer.css" type="text/css" />
-    <link rel="stylesheet" href="http://localhost:8081/xeokit-bim-viewer/app/css/style.css" type="text/css" />
+    <link rel="stylesheet" href="../dist/xeokit-bim-viewer.css" type="text/css" />
+    <link rel="stylesheet" href="css/style.css" type="text/css" />
     <style>
         /* Variables CSS pour les thèmes */
         :root {
@@ -913,12 +913,12 @@
 </body>
 
 <!-- Tooltips libraries -->
-<script src="http://localhost:8081/xeokit-bim-viewer/app/lib/popper.js"></script>
-<script src="http://localhost:8081/xeokit-bim-viewer/app/lib/tippy.js"></script>
+<script src="lib/popper.js"></script>
+<script src="lib/tippy.js"></script>
 
 <script type="module">
 
-    import { Server, BIMViewer, LocaleService } from "http://localhost:8081/xeokit-bim-viewer/dist/xeokit-bim-viewer.es.js";
+    import { Server, BIMViewer, LocaleService } from "../dist/xeokit-bim-viewer.es.js";
 
     import { messages as localeMessages } from "../dist/messages.js";
 

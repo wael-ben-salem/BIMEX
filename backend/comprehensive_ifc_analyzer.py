@@ -48,18 +48,35 @@ class ComprehensiveIFCAnalyzer:
     
     def __init__(self, ifc_file_path: str):
         """
-        Initialise l'analyseur complet
-        
+        Initialise l'analyseur complet avec gestion d'erreurs robuste
+
         Args:
             ifc_file_path: Chemin vers le fichier IFC
         """
         self.ifc_file_path = ifc_file_path
-        self.ifc_file = ifcopenshell.open(ifc_file_path)
+        self.ifc_file = None
         self.results = {}
         self.errors = []
         self.warnings = []
-        
-        logger.info(f"Analyseur IFC complet initialisé pour: {ifc_file_path}")
+        self.file_corrupted = False
+
+        logger.info(f"Initialisation de l'analyseur IFC complet pour: {ifc_file_path}")
+
+        # Essayer de charger le fichier IFC avec gestion d'erreurs
+        try:
+            self.ifc_file = ifcopenshell.open(ifc_file_path)
+            logger.info(f"✅ Fichier IFC chargé avec succès")
+        except Exception as e:
+            error_msg = str(e)
+            logger.error(f"❌ Erreur lors du chargement du fichier IFC: {error_msg}")
+
+            if "Type held at index" in error_msg and "class Blank" in error_msg:
+                self.file_corrupted = True
+                self.errors.append("Fichier IFC corrompu ou mal formé")
+                logger.error("🔍 DIAGNOSTIC: Fichier IFC corrompu détecté")
+            else:
+                self.errors.append(f"Erreur de chargement IFC: {error_msg}")
+                raise
     
     def analyze_comprehensive(self) -> Dict[str, Any]:
         """
@@ -98,6 +115,14 @@ class ComprehensiveIFCAnalyzer:
             
             logger.info(f"✅ Analyse IFC complète terminée avec {len(self.results)} modules")
             
+            # EXTRACTION DES SCORES DYNAMIQUES
+            metrics_data = self.results.get('metrics', {}).get('data', {})
+            building_metrics = metrics_data.get('building_metrics', {})
+            structural_score = building_metrics.get('structural_score')
+            mep_score = building_metrics.get('mep_score')
+            spatial_score = building_metrics.get('spatial_score')
+            quality_score = building_metrics.get('quality_score')
+            
             return {
                 "analysis_results": self.results,
                 "summary": summary,
@@ -105,7 +130,11 @@ class ComprehensiveIFCAnalyzer:
                 "file_analyzed": self.ifc_file_path,
                 "analyzer_version": "ComprehensiveIFCAnalyzer v1.0",
                 "errors": self.errors,
-                "warnings": self.warnings
+                "warnings": self.warnings,
+                "structural_score": structural_score,
+                "mep_score": mep_score,
+                "spatial_score": spatial_score,
+                "quality_score": quality_score
             }
             
         except Exception as e:

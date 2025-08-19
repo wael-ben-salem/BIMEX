@@ -1,0 +1,22 @@
+{
+    "id": "kalmsjk",
+    "name": "kalmsjk",
+    "models": [
+        {
+            "id": "model",
+            "name": "kalmsjk Model"
+        }
+    ],
+    "viewerConfigs": {},
+    "viewerContent": {
+        "modelsLoaded": [
+            "model"
+        ]
+    },
+    "viewerState": {
+        "tabOpen": "classes",
+        "expandObjectsTree": 1,
+        "expandClassesTree": 1,
+        "expandStoreysTree": 1
+    }
+}

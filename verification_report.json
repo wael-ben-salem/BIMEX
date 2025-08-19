@@ -1,0 +1,78 @@
+{
+  "timestamp": "2025-08-17T13:32:39.795958",
+  "base_url": "http://localhost:8001",
+  "test_results": [
+    {
+      "timestamp": "13:32:39",
+      "test": "Backend Endpoint",
+      "status": "✅ PASS",
+      "details": "Données reçues: 11 sections"
+    },
+    {
+      "timestamp": "13:32:39",
+      "test": "Scores BIM",
+      "status": "✅ PASS",
+      "details": "4 scores valides: ['structural_score', 'mep_score', 'spatial_score', 'quality_score']"
+    },
+    {
+      "timestamp": "13:32:39",
+      "test": "Métriques Performance",
+      "status": "✅ PASS",
+      "details": "4 métriques valides: ['efficiency', 'sustainability', 'cost_effectiveness', 'innovation']"
+    },
+    {
+      "timestamp": "13:32:39",
+      "test": "Métriques Innovation",
+      "status": "✅ PASS",
+      "details": "6 métriques valides: ['ai_efficiency', 'design_variants', 'design_score', 'maintenance_accuracy', 'maintenance_savings', 'innovation_score']"
+    },
+    {
+      "timestamp": "13:32:39",
+      "test": "Éléments Structurels",
+      "status": "✅ PASS",
+      "details": "Éléments valides: ['columns', 'beams', 'walls', 'slabs']"
+    },
+    {
+      "timestamp": "13:32:39",
+      "test": "Éléments MEP",
+      "status": "✅ PASS",
+      "details": "Éléments valides: ['electrical', 'plumbing', 'hvac', 'fire_protection']"
+    },
+    {
+      "timestamp": "13:32:39",
+      "test": "Éléments Spatiaux",
+      "status": "✅ PASS",
+      "details": "Éléments valides: ['spaces', 'total_area', 'total_volume', 'storeys']"
+    },
+    {
+      "timestamp": "13:32:39",
+      "test": "Données Factices",
+      "status": "✅ PASS",
+      "details": "Aucune donnée factice détectée"
+    },
+    {
+      "timestamp": "13:32:39",
+      "test": "Cohérence Globale",
+      "status": "✅ PASS",
+      "details": "Scores BIM (73.2) et performance (82.5) cohérents"
+    },
+    {
+      "timestamp": "13:32:39",
+      "test": "Source Données",
+      "status": "ℹ️ INFO",
+      "details": "Source: unknown, Dernière mise à jour: unknown"
+    },
+    {
+      "timestamp": "13:32:39",
+      "test": "VÉRIFICATION GLOBALE",
+      "status": "✅ SUCCESS",
+      "details": "Résultat: 9/10 tests réussis"
+    }
+  ],
+  "summary": {
+    "total": 11,
+    "passed": 9,
+    "failed": 0,
+    "warnings": 0
+  }
+}

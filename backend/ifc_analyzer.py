@@ -40,14 +40,52 @@ class IFCAnalyzer:
         self._load_ifc_file()
         
     def _load_ifc_file(self):
-        """Charge le fichier IFC"""
+        """Charge le fichier IFC avec gestion d'erreurs robuste"""
         try:
+            # Vérifier que le fichier existe
+            if not self.ifc_file_path.exists():
+                raise FileNotFoundError(f"Fichier IFC non trouvé: {self.ifc_file_path}")
+
+            # Vérifier la taille du fichier
+            file_size = self.ifc_file_path.stat().st_size
+            if file_size == 0:
+                raise ValueError(f"Fichier IFC vide: {self.ifc_file_path}")
+
+            logger.info(f"Tentative de chargement du fichier IFC: {self.ifc_file_path} ({file_size} bytes)")
+
+            # Essayer de charger le fichier IFC
             self.ifc_file = ifcopenshell.open(str(self.ifc_file_path))
-            logger.info(f"Fichier IFC chargé: {self.ifc_file_path}")
+            logger.info(f"✅ Fichier IFC chargé avec succès: {self.ifc_file_path}")
             logger.info(f"Schema IFC: {self.ifc_file.schema}")
+
+            # Vérifier la validité basique du fichier
+            try:
+                projects = self.ifc_file.by_type("IfcProject")
+                if not projects:
+                    logger.warning("⚠️ Aucun projet IFC trouvé dans le fichier")
+                else:
+                    logger.info(f"✅ Projet IFC trouvé: {projects[0].Name if projects[0].Name else 'Sans nom'}")
+            except Exception as validation_error:
+                logger.warning(f"⚠️ Problème de validation du fichier IFC: {validation_error}")
+
         except Exception as e:
-            logger.error(f"Erreur lors du chargement du fichier IFC: {e}")
-            raise
+            error_msg = str(e)
+            logger.error(f"❌ Erreur lors du chargement du fichier IFC: {error_msg}")
+
+            # Diagnostics spécifiques pour différents types d'erreurs
+            if "Type held at index" in error_msg and "class Blank" in error_msg:
+                logger.error("🔍 DIAGNOSTIC: Fichier IFC corrompu ou mal formé")
+                logger.error("💡 SOLUTIONS POSSIBLES:")
+                logger.error("   1. Vérifier l'intégrité du fichier IFC source")
+                logger.error("   2. Essayer de réexporter le fichier depuis le logiciel CAO")
+                logger.error("   3. Utiliser un outil de validation IFC")
+                raise ValueError(f"Fichier IFC corrompu: {error_msg}")
+            elif "std::vector" in error_msg or "std::allocator" in error_msg:
+                logger.error("🔍 DIAGNOSTIC: Problème de structure de données C++")
+                logger.error("💡 SOLUTION: Fichier IFC incompatible avec cette version d'ifcopenshell")
+                raise ValueError(f"Fichier IFC incompatible: {error_msg}")
+            else:
+                raise
     
     def extract_project_info(self) -> Dict[str, Any]:
         """Extrait les informations générales du projet"""
@@ -820,11 +858,83 @@ class IFCAnalyzer:
         try:
             logger.info("Début de l'analyse complète du fichier IFC")
             
+            # Extraire les métriques de base
+            building_metrics = self.extract_building_metrics()
+            
+            # Compter les éléments par type
+            element_counts = building_metrics.get("element_counts", {})
+            
+            # Analyser les espaces
+            spaces_data = building_metrics.get("spaces", {})
+            
+            # Analyser les surfaces
+            surfaces_data = building_metrics.get("surfaces", {})
+            
+            # Analyser les ouvertures
+            openings_data = building_metrics.get("openings", {})
+            
+            # Analyser les éléments structurels
+            structural_data = building_metrics.get("structural_elements", {})
+            
+            # Analyser les matériaux
+            materials_data = building_metrics.get("materials", {})
+            
+            # Générer l'analyse complète avec la structure attendue
             analysis = {
                 "project_info": self.extract_project_info(),
-                "building_metrics": self.extract_building_metrics(),
+                "building_metrics": building_metrics,
                 "analysis_timestamp": pd.Timestamp.now().isoformat(),
-                "file_path": str(self.ifc_file_path)
+                "file_path": str(self.ifc_file_path),
+                
+                # Structure attendue par get_real_project_metrics
+                "elements": {
+                    "total_count": sum(element_counts.values()) if element_counts else 0,
+                    "by_type": element_counts,
+                    "walls": element_counts.get("IfcWall", 0),
+                    "windows": element_counts.get("IfcWindow", 0),
+                    "doors": element_counts.get("IfcDoor", 0),
+                    "slabs": element_counts.get("IfcSlab", 0),
+                    "columns": element_counts.get("IfcColumn", 0),
+                    "beams": element_counts.get("IfcBeam", 0)
+                },
+                "spaces": {
+                    "total_count": spaces_data.get("total_spaces", 0),
+                    "total_area": spaces_data.get("total_area", 0.0),
+                    "by_storey": spaces_data.get("by_storey", {}),
+                    "space_types": spaces_data.get("space_types", {})
+                },
+                "surfaces": {
+                    "total_floor_area": surfaces_data.get("total_floor_area", 0.0),
+                    "total_wall_area": surfaces_data.get("total_wall_area", 0.0),
+                    "total_roof_area": surfaces_data.get("total_roof_area", 0.0),
+                    "total_window_area": surfaces_data.get("total_window_area", 0.0),
+                    "total_door_area": surfaces_data.get("total_door_area", 0.0),
+                    "total_building_area": surfaces_data.get("total_building_area", 0.0)
+                },
+                "openings": {
+                    "total_count": openings_data.get("total_openings", 0),
+                    "windows": openings_data.get("windows", {}),
+                    "doors": openings_data.get("doors", {}),
+                    "total_window_area": openings_data.get("total_window_area", 0.0),
+                    "total_door_area": openings_data.get("total_door_area", 0.0)
+                },
+                "structural_elements": {
+                    "total_count": structural_data.get("total_structural_elements", 0),
+                    "columns": structural_data.get("columns", 0),
+                    "beams": structural_data.get("beams", 0),
+                    "foundations": structural_data.get("foundations", 0)
+                },
+                "materials": {
+                    "total_count": materials_data.get("total_materials", 0),
+                    "material_types": materials_data.get("material_types", []),
+                    "by_element_type": materials_data.get("by_element_type", {})
+                },
+                "anomalies": {
+                    "total_count": 0,  # À implémenter si nécessaire
+                    "missing_elements": [],
+                    "invalid_geometries": [],
+                    "missing_properties": []
+                }
             }
             
             logger.info("Analyse complète terminée")

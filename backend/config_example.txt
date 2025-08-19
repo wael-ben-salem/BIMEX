@@ -1,0 +1,21 @@
+# Configuration Autodesk Platform Services (APS) pour la conversion RVT→IFC
+# 
+# Pour obtenir ces identifiants :
+# 1. Créez un compte sur https://aps.autodesk.com/
+# 2. Créez une nouvelle application
+# 3. Copiez le Client ID et Client Secret
+# 4. Créez un fichier .env avec ces valeurs
+
+# Identifiants Autodesk APS (obligatoires pour la conversion RVT→IFC)
+AUTODESK_CLIENT_ID=your_client_id_here
+AUTODESK_CLIENT_SECRET=your_client_secret_here
+
+# Configuration optionnelle
+# Bucket pour les fichiers temporaires (par défaut: rvt-conversion-bucket)
+AUTODESK_BUCKET_NAME=rvt-conversion-bucket
+
+# Timeout pour la conversion (en secondes, par défaut: 600)
+AUTODESK_CONVERSION_TIMEOUT=600
+
+# Mode hors ligne (true/false) - pour les tests sans API
+RVT_OFFLINE_MODE=false 

@@ -109,6 +109,25 @@ def analyze_bim_file(project_id, **context):
         print(f"Erreur lors de l'analyse: {e}")
         raise
 
+def export_geojson(project_id, **context):
+    """Générer et persister le GeoJSON complet pour le projet"""
+    try:
+        # Demander au backend de générer et persister le GeoJSON
+        response = requests.post(
+            f'{BIMEX_API_URL}/api/export/{project_id}/geojson',
+            params={'persist': 'true'},
+            timeout=600
+        )
+        if response.status_code in (200, 201):
+            print(f"GeoJSON généré pour {project_id}")
+            return True
+        else:
+            print(f"Erreur génération GeoJSON: {response.status_code} - {response.text}")
+            return False
+    except Exception as e:
+        print(f"Exception export_geojson: {e}")
+        return False
+
 def export_to_superset(**context):
     """Exporter les données vers Apache Superset"""
     try:
@@ -268,6 +287,12 @@ analyze_task = PythonOperator(
 )
 
 # 3. Export vers les plateformes BI (en parallèle)
+export_geojson_task = PythonOperator(
+    task_id='export_geojson',
+    python_callable=export_geojson,
+    op_kwargs={'project_id': '{{ ti.xcom_pull(task_ids="upload_file_to_bimex") }}'},
+    dag=dag
+)
 export_superset_task = PythonOperator(
     task_id='export_to_superset',
     python_callable=export_to_superset,
@@ -310,7 +335,7 @@ cleanup_task = PythonOperator(
 scan_files_task >> upload_task >> analyze_task
 
 # Export en parallèle vers toutes les plateformes BI
-analyze_task >> [export_superset_task, update_grafana_task, create_metabase_task, trigger_n8n_task]
+analyze_task >> [export_geojson_task, export_superset_task, update_grafana_task, create_metabase_task, trigger_n8n_task]
 
 # Finalisation
-[export_superset_task, update_grafana_task, create_metabase_task, trigger_n8n_task] >> mark_processed_task >> cleanup_task
+[export_geojson_task, export_superset_task, update_grafana_task, create_metabase_task, trigger_n8n_task] >> mark_processed_task >> cleanup_task

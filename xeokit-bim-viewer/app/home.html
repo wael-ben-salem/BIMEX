@@ -416,7 +416,7 @@
             display: flex;
             gap: 15px;
             align-items: center;
-            justify-content: space-between;
+            justify-content: flex-end;
         }
 
         .main-action {
@@ -432,25 +432,88 @@
         }
 
         .action-menu-trigger {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
+            padding: 10px 16px;
+            border-radius: 9999px;
             background: var(--bg-glass);
             border: 2px solid rgba(0, 245, 255, 0.3);
             color: var(--text-primary);
             cursor: pointer;
             transition: var(--transition-smooth);
-            display: flex;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            font-size: 18px;
+            gap: 8px;
+            font-size: 14px;
+            line-height: 1;
             backdrop-filter: blur(10px);
         }
 
         .action-menu-trigger:hover {
             border-color: var(--primary-neon);
             box-shadow: var(--glow-primary);
-            transform: scale(1.1);
+            transform: translateY(-2px);
+        }
+
+        /* Actions modal (global, centered) */
+        .actions-modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(6px);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .actions-modal-card {
+            background: rgba(26,26,46,0.95);
+            border: 1px solid rgba(99,102,241,0.35);
+            border-radius: 16px;
+            max-width: 720px;
+            width: 92%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        .actions-modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            border-bottom: 1px solid rgba(99,102,241,0.25);
+        }
+
+        .actions-modal-title {
+            margin: 0;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.1rem;
+        }
+
+        .actions-modal-close {
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .actions-modal-body {
+            padding: 18px 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+        }
+
+        .actions-modal-footer {
+            padding: 14px 20px;
+            border-top: 1px solid rgba(99,102,241,0.25);
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
         }
 
         .action-menu {
@@ -1284,7 +1347,7 @@
         <div class="add-model-section">
             <button class="add-model-btn" onclick="openAddModelModal()">
                 <i class="fas fa-plus"></i>
-                Ajouter un modèle IFC
+                Ajouter un modèle BIM (IFC/RVT)
             </button>
         </div>
 
@@ -1317,13 +1380,22 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label" for="ifcFile">Fichier IFC</label>
+                    <label class="form-label" for="ifcFile">Fichier BIM (IFC/RVT)</label>
                     <div class="file-input-wrapper">
-                        <input type="file" id="ifcFile" class="file-input" accept=".ifc" required>
+                        <input type="file" id="ifcFile" class="file-input" accept=".ifc,.rvt" required>
                         <div class="file-input-display" id="fileInputDisplay">
                             <i class="fas fa-upload" style="margin-right: 10px; color: #667eea;"></i>
-                            <span>Cliquez pour sélectionner un fichier IFC</span>
+                            <span>Cliquez pour sélectionner un fichier IFC ou RVT</span>
                         </div>
+                    </div>
+                    <div class="file-type-info" style="margin-top: 8px; font-size: 12px; color: #666;">
+                        <i class="fas fa-info-circle"></i>
+                        Formats supportés: .ifc (direct), .rvt (conversion automatique via pyRevit)
+                    </div>
+                    <div class="rvt-help-info" style="margin-top: 8px; padding: 8px; background: #f8f9fa; border-radius: 4px; font-size: 12px; color: #666; display: none;" id="rvtHelpInfo">
+                        <i class="fas fa-lightbulb" style="color: #ffc107;"></i>
+                        <strong>Conversion RVT:</strong> Conversion automatique via pyRevit + Revit installé.
+                        <a href="#" onclick="showRVTHelp()" style="color: #007bff;">Guide de configuration</a>
                     </div>
                 </div>
 
@@ -1339,6 +1411,71 @@
                     <button type="submit" class="modal-btn primary" id="submitBtn">Ajouter le modèle</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- Global Actions Modal -->
+    <div id="actionsModal" class="actions-modal-overlay" onclick="if(event.target===this){closeActionsModal()}">
+        <div class="actions-modal-card">
+            <div class="actions-modal-header">
+                <h3 class="actions-modal-title" id="actionsModalTitle"><i class="fas fa-sliders-h"></i> Actions</h3>
+                <button class="actions-modal-close" onclick="closeActionsModal()">✕</button>
+            </div>
+            <div class="actions-modal-body" id="actionsModalBody"></div>
+            <div class="actions-modal-footer">
+                <button class="action-btn" onclick="closeActionsModal()"><i class="fas fa-times"></i><span>Fermer</span></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Export Modal (réutilise le style des actions) -->
+    <div id="exportModal" class="actions-modal-overlay" style="display:none;" onclick="if(event.target===this){closeExportModal()}">
+        <div class="actions-modal-card">
+            <div class="actions-modal-header">
+                <h3 class="actions-modal-title"><i class="fas fa-download"></i> Export avancé</h3>
+                <button class="actions-modal-close" onclick="closeExportModal()">✕</button>
+            </div>
+            <div class="actions-modal-body">
+                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:14px;">
+                    <div style="background: rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:14px;">
+                        <h4 style="margin:0 0 8px 0; color:var(--text-primary)">Export multi‑vues</h4>
+                        <button class="action-btn primary" onclick="exportTo('csv')"><i class="fas fa-file-csv"></i><span>Tabulaire CSV</span></button>
+                        <button class="action-btn" onclick="exportTo('parquet')"><i class="fas fa-database"></i><span>Parquet</span></button>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:14px;">
+                        <h4 style="margin:0 0 8px 0; color:var(--text-primary)">Spatial</h4>
+                        <button class="action-btn" onclick="exportTo('geojson')"><i class="fas fa-globe"></i><span>GeoJSON</span></button>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:14px;">
+                        <h4 style="margin:0 0 8px 0; color:var(--text-primary)">Graphe</h4>
+                        <button class="action-btn" onclick="exportTo('neo4j')"><i class="fas fa-project-diagram"></i><span>Neo4j</span></button>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:14px;">
+                        <h4 style="margin:0 0 8px 0; color:var(--text-primary)">Statistique</h4>
+                        <button class="action-btn" onclick="exportTo('profiling')"><i class="fas fa-chart-pie"></i><span>Profiling report</span></button>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:14px;">
+                        <h4 style="margin:0 0 8px 0; color:var(--text-primary)">Extraction IA</h4>
+                        <button class="action-btn" onclick="exportTo('features')"><i class="fas fa-magic"></i><span>Features dérivées</span></button>
+                        <button class="action-btn" onclick="exportTo('dataset-ml')"><i class="fas fa-robot"></i><span>Dataset ML</span></button>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:14px;">
+                        <h4 style="margin:0 0 8px 0; color:var(--text-primary)">3D + Données</h4>
+                        <button class="action-btn" onclick="exportTo('glb-csv')"><i class="fas fa-cubes"></i><span>GLB + CSV liés</span></button>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:14px;">
+                        <h4 style="margin:0 0 8px 0; color:var(--text-primary)">API interactive</h4>
+                        <button class="action-btn" onclick="exportTo('api')"><i class="fas fa-plug"></i><span>Exposer en API</span></button>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:14px;">
+                        <h4 style="margin:0 0 8px 0; color:var(--text-primary)">Rapport</h4>
+                        <button class="action-btn" onclick="exportTo('pdf')"><i class="fas fa-file-pdf"></i><span>PDF interactif</span></button>
+                    </div>
+                </div>
+            </div>
+            <div class="actions-modal-footer">
+                <button class="action-btn" onclick="closeExportModal()"><i class="fas fa-times"></i><span>Fermer</span></button>
+            </div>
         </div>
     </div>
 
@@ -1702,49 +1839,12 @@
                     </div>
                 </div>
                 <div class="project-actions">
-                    <!-- Action principale -->
-                    <button class="action-btn primary main-action" onclick="analyzeProject('${project.id}')">
-                        <i class="fas fa-rocket"></i>
-                        Lancer l'Analyse IA
-                    </button>
-
                     <!-- Menu contextuel innovant -->
                     <div class="action-menu-container">
-                        <button class="action-menu-trigger" onclick="toggleActionMenu('${project.id}')">
-                            <i class="fas fa-ellipsis-v"></i>
+                        <button class="action-menu-trigger" onclick="openActionsModal('${project.id}')">
+                            <i class="fas fa-sliders-h"></i>
+                            Actions
                         </button>
-
-                        <div class="action-menu" id="menu-${project.id}">
-                            <div class="action-menu-item" onclick="viewModel('${project.id}')">
-                                <i class="fas fa-eye"></i>
-                                <span>Visualiser 3D</span>
-                                <small>Modèle interactif</small>
-                            </div>
-
-                            <div class="action-menu-item" onclick="predictiveMaintenance('${project.id}')">
-                                <i class="fas fa-tools"></i>
-                                <span>Maintenance IA</span>
-                                <small>Prédictions avancées</small>
-                            </div>
-
-                            <div class="action-menu-item" onclick="compareProject('${project.id}')">
-                                <i class="fas fa-balance-scale"></i>
-                                <span>Comparaison</span>
-                                <small>Analyse comparative</small>
-                            </div>
-
-                            <div class="action-menu-item" onclick="exportProject('${project.id}')">
-                                <i class="fas fa-download"></i>
-                                <span>Exporter</span>
-                                <small>Rapport complet</small>
-                            </div>
-
-                            <div class="action-menu-item disabled" onclick="viewBlueprint('${project.id}')">
-                                <i class="fas fa-drafting-compass"></i>
-                                <span>Blueprint</span>
-                                <small>Bientôt disponible</small>
-                            </div>
-                        </div>
                     </div>
                 </div>
             `;
@@ -1754,8 +1854,11 @@
 
         // Fonctions d'action
         function viewModel(projectId) {
-            // 🔧 CORRECTION: Utiliser le bon chemin pour le viewer XeoKit (depuis la racine du serveur)
-            const viewerUrl = `http://localhost:8081/xeokit-bim-viewer/app/index.html?projectId=${projectId}`;
+            // Ouvre toujours le viewer servi par http-server (par défaut sur 8081)
+            const viewerOrigin = (window.location.port === '8081')
+                ? window.location.origin
+                : 'http://localhost:8081';
+            const viewerUrl = `${viewerOrigin}/app/index.html?projectId=${encodeURIComponent(projectId)}`;
             console.log(`🔍 Ouverture du viewer pour le projet: ${projectId} -> ${viewerUrl}`);
             window.open(viewerUrl, '_blank');
         }
@@ -1849,6 +1952,33 @@
             }, 2000);
         }
 
+        function openActionsModal(projectId) {
+            const project = allProjects.find(p => p.id === projectId);
+            const overlay = document.getElementById('actionsModal');
+            const titleEl = document.getElementById('actionsModalTitle');
+            const bodyEl = document.getElementById('actionsModalBody');
+
+            if (project && overlay && titleEl && bodyEl) {
+                titleEl.innerHTML = `<i class="fas fa-sliders-h"></i> Actions pour ${project.name}`;
+                bodyEl.innerHTML = `
+                    <button class="action-btn primary" onclick="closeActionsModal(); analyzeProject('${project.id}')"><i class="fas fa-rocket"></i><span>Lancer l\'Analyse IA</span></button>
+                    <button class="action-btn" onclick="closeActionsModal(); viewModel('${project.id}')"><i class="fas fa-eye"></i><span>Visualiser 3D</span></button>
+                    <button class="action-btn" onclick="closeActionsModal(); predictiveMaintenance('${project.id}')"><i class="fas fa-tools"></i><span>Maintenance IA</span></button>
+                    <button class="action-btn" onclick="closeActionsModal(); compareProject('${project.id}')"><i class="fas fa-balance-scale"></i><span>Comparaison</span></button>
+                    <button class="action-btn" onclick="closeActionsModal(); openExportModal('${project.id}')"><i class="fas fa-download"></i><span>Exporter</span></button>
+                    <button class="action-btn disabled" onclick="closeActionsModal(); viewBlueprint('${project.id}')"><i class="fas fa-drafting-compass"></i><span>Blueprint</span></button>
+                `;
+                overlay.style.display = 'flex';
+            }
+        }
+
+        function closeActionsModal() {
+            const overlay = document.getElementById('actionsModal');
+            if (overlay) {
+                overlay.style.display = 'none';
+            }
+        }
+
         function viewBlueprint(projectId) {
             // Fonctionnalité à implémenter plus tard
             alert(`Fonctionnalité "Voir blueprint" pour ${projectId} - À venir prochainement !`);
@@ -1898,7 +2028,7 @@
             document.getElementById('addModelForm').reset();
             document.getElementById('fileInputDisplay').innerHTML = `
                 <i class="fas fa-upload" style="margin-right: 10px; color: #667eea;"></i>
-                <span>Cliquez pour sélectionner un fichier IFC</span>
+                <span>Cliquez pour sélectionner un fichier IFC ou RVT</span>
             `;
             document.getElementById('fileInputDisplay').classList.remove('has-file');
             document.getElementById('progressContainer').style.display = 'none';
@@ -1913,17 +2043,47 @@
             fileInput.addEventListener('change', function(e) {
                 const file = e.target.files[0];
                 if (file) {
+                    const fileName = file.name;
+                    const fileSize = (file.size / (1024 * 1024)).toFixed(2); // Taille en MB
+                    const fileExtension = fileName.split('.').pop().toLowerCase();
+
+                    // Déterminer l'icône et le type de fichier
+                    let fileIcon = 'fas fa-file';
+                    let fileTypeText = '';
+                    let conversionNote = '';
+
+                    if (fileExtension === 'ifc') {
+                        fileIcon = 'fas fa-cube';
+                        fileTypeText = 'IFC';
+                        conversionNote = 'Traitement direct';
+                    } else if (fileExtension === 'rvt') {
+                        fileIcon = 'fas fa-building';
+                        fileTypeText = 'RVT';
+                        conversionNote = 'Conversion automatique via pyRevit';
+
+                        // Afficher l'aide pour RVT
+                        document.getElementById('rvtHelpInfo').style.display = 'block';
+                    }
+
                     fileDisplay.innerHTML = `
-                        <i class="fas fa-file" style="margin-right: 10px; color: #4CAF50;"></i>
-                        <span>${file.name}</span>
+                        <i class="${fileIcon}" style="margin-right: 10px; color: #4CAF50;"></i>
+                        <div>
+                            <div style="font-weight: 500;">${fileName}</div>
+                            <div style="font-size: 12px; color: #666; margin-top: 2px;">
+                                ${fileSize} MB • ${fileTypeText} • ${conversionNote}
+                            </div>
+                        </div>
                     `;
                     fileDisplay.classList.add('has-file');
                 } else {
                     fileDisplay.innerHTML = `
                         <i class="fas fa-upload" style="margin-right: 10px; color: #667eea;"></i>
-                        <span>Cliquez pour sélectionner un fichier IFC</span>
+                        <span>Cliquez pour sélectionner un fichier IFC ou RVT</span>
                     `;
                     fileDisplay.classList.remove('has-file');
+
+                    // Masquer l'aide RVT
+                    document.getElementById('rvtHelpInfo').style.display = 'none';
                 }
             });
         });
@@ -1947,6 +2107,15 @@
                 return;
             }
 
+            // Déterminer le type de fichier
+            const fileName = file.name;
+            const fileExtension = fileName.split('.').pop().toLowerCase();
+
+            if (!['ifc', 'rvt'].includes(fileExtension)) {
+                alert('Format de fichier non supporté. Veuillez sélectionner un fichier .ifc ou .rvt');
+                return;
+            }
+
             // Désactiver le bouton de soumission
             const submitBtn = document.getElementById('submitBtn');
             submitBtn.disabled = true;
@@ -1961,11 +2130,24 @@
                 const formData = new FormData();
                 formData.append('file', file);
                 formData.append('project_name', projectName);
+                formData.append('file_type', fileExtension);
 
                 updateProgress(0, 'Envoi du fichier...');
 
+                // Choisir l'endpoint selon le type de fichier
+                let endpoint;
+                let initialMessage;
+
+                if (fileExtension === 'ifc') {
+                    endpoint = '/upload-ifc';
+                    initialMessage = 'Fichier IFC envoyé, conversion en cours...';
+                } else if (fileExtension === 'rvt') {
+                    endpoint = '/upload-rvt';
+                    initialMessage = 'Fichier RVT envoyé, conversion RVT→IFC→XKT via pyRevit en cours...';
+                }
+
                 // Envoyer le fichier au backend
-                const response = await fetch(`${API_BASE_URL}/upload-ifc`, {
+                const response = await fetch(`${API_BASE_URL}${endpoint}`, {
                     method: 'POST',
                     body: formData
                 });
@@ -1978,20 +2160,33 @@
                 const result = await response.json();
                 const conversionId = result.conversion_id;
 
-                updateProgress(10, 'Fichier envoyé, conversion en cours...');
+                updateProgress(10, initialMessage);
 
                 // Suivre le progrès de la conversion
                 await trackConversionProgress(conversionId);
 
             } catch (error) {
                 console.error('Erreur:', error);
-                updateProgress(0, `Erreur: ${error.message}`);
+                
+                // Messages d'erreur plus spécifiques pour RVT
+                let errorMessage = error.message;
+                if (fileExtension === 'rvt') {
+                    if (error.message.includes('pyrevit') || error.message.includes('Revit')) {
+                        errorMessage = 'Erreur conversion RVT→IFC: Vérifiez que pyRevit et Revit sont installés et configurés.';
+                    } else if (error.message.includes('conversion')) {
+                        errorMessage = 'Erreur conversion RVT→IFC: Problème lors de la conversion via pyRevit.';
+                    } else if (error.message.includes('fichier')) {
+                        errorMessage = 'Erreur conversion RVT→IFC: Impossible de traiter le fichier RVT.';
+                    }
+                }
+                
+                updateProgress(0, `Erreur: ${errorMessage}`);
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'Ajouter le modèle';
 
                 setTimeout(() => {
                     progressContainer.style.display = 'none';
-                }, 3000);
+                }, 5000);
             }
         }
 
@@ -2471,26 +2666,59 @@
         });
 
         // Nouvelle fonction d'export
-        function exportProject(projectId) {
-            console.log(`📄 Export du projet ${projectId}`);
-
-            // Animation de feedback
-            const trigger = event.target.closest('.action-menu-item');
-            if (trigger) {
-                trigger.style.background = 'rgba(0, 255, 136, 0.2)';
-                setTimeout(() => {
-                    trigger.style.background = '';
-                }, 300);
+        let currentExportProjectId = null;
+        function openExportModal(projectId){
+            currentExportProjectId = projectId;
+            const modal = document.getElementById('exportModal');
+            if(modal){ modal.style.display='flex'; }
+        }
+        function closeExportModal(){
+            const modal = document.getElementById('exportModal');
+            if(modal){ modal.style.display='none'; }
+        }
+        async function exportTo(kind){
+            if(!currentExportProjectId){
+                alert('Aucun projet sélectionné');
+                return;
             }
-
-            // Simuler l'export
-            setTimeout(() => {
-                alert(`✅ Rapport du projet ${projectId} exporté avec succès !`);
-            }, 1000);
-
-            // Fermer le menu
-            const menu = document.getElementById(`menu-${projectId}`);
-            if (menu) menu.classList.remove('active');
+            console.log(`🚀 Export ${kind} pour projet ${currentExportProjectId}`);
+            try {
+                // Routes d'API suggérées (à brancher côté backend)
+                const BASE = (typeof BACKEND_URL !== 'undefined' && BACKEND_URL) ? BACKEND_URL : 'http://localhost:8001';
+                const routes = {
+                    csv: `${BASE}/api/export/${currentExportProjectId}/csv`,
+                    parquet: `${BASE}/api/export/${currentExportProjectId}/parquet`,
+                    geojson: `${BASE}/api/export/${currentExportProjectId}/geojson`,
+                    neo4j: `${BASE}/api/export/${currentExportProjectId}/neo4j`,
+                    profiling: `${BASE}/api/export/${currentExportProjectId}/profiling`,
+                    features: `${BASE}/api/export/${currentExportProjectId}/features`,
+                    'dataset-ml': `${BASE}/api/export/${currentExportProjectId}/dataset-ml`,
+                    'glb-csv': `${BASE}/api/export/${currentExportProjectId}/glb-csv`,
+                    api: `${BASE}/api/export/${currentExportProjectId}/api`,
+                    pdf: `${BASE}/api/export/${currentExportProjectId}/pdf`
+                };
+                const url = routes[kind] || routes.csv;
+                // Appel simple; adapter selon la réponse (blob/download ou json)
+                const res = await fetch(url, { method: 'POST', mode: 'cors' });
+                if(!res.ok){ throw new Error('Export échoué'); }
+                // Si le backend renvoie un blob (fichier), déclenche un download
+                const contentType = res.headers.get('content-type') || '';
+                if(contentType.includes('application/json')){
+                    const data = await res.json();
+                    alert(`✅ Export ${kind} lancé: ${data.message || 'OK'}`);
+                } else {
+                    const blob = await res.blob();
+                    const a = document.createElement('a');
+                    a.href = URL.createObjectURL(blob);
+                    a.download = `export_${currentExportProjectId}_${kind}`;
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                }
+            } catch(err){
+                console.error(err);
+                alert(`❌ Export ${kind} échoué`);
+            }
         }
 
         // Fonctions utilitaires pour fermer les pop-ups
@@ -3377,6 +3605,33 @@
         }
 
         console.log('🚀 Business Intelligence Module chargé avec succès !');
+
+        function showRVTHelp() {
+            alert(`🏗️ Configuration de la Conversion RVT
+
+Pour activer la conversion automatique des fichiers Revit (.rvt) vers IFC :
+
+1️⃣ CRÉER UN COMPTE AUTODESK APS (GRATUIT)
+   • Allez sur https://aps.autodesk.com/
+   • Créez un compte développeur
+   • Créez une nouvelle application
+
+2️⃣ OBTENIR LES IDENTIFIANTS
+   • Client ID et Client Secret
+   • 100 conversions gratuites par mois
+
+3️⃣ CONFIGURER BIMEX
+   • Ajoutez vos identifiants dans backend/.env
+   • Redémarrez le serveur backend
+
+📋 ALTERNATIVE SANS CONFIGURATION
+   • Exportez manuellement votre fichier RVT en IFC depuis Revit
+   • Utilisez ensuite le fichier IFC dans BIMEX
+
+💡 GUIDE COMPLET
+   Consultez GUIDE_CONVERSION_RVT.md pour les instructions détaillées.`);
+        }
+
     </script>
 </body>
 
