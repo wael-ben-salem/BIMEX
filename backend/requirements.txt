@@ -32,3 +32,7 @@ playwright==1.40.0
 nest-asyncio==1.5.8  # Pour compatibilité FastAPI + Playwright
 weasyprint==60.2  # Gardé comme fallback
 jinja2==3.1.2  # Pour les templates
+
+# OCR Modules dependencies
+pymupdf==1.22.5
+pytest==7.4.2

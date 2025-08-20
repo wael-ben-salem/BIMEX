@@ -24,6 +24,16 @@ import logging
 import re
 from dotenv import load_dotenv
 
+# Import OCR Integration
+try:
+    from ocr_integration import get_ocr_routers, init_ocr, get_ocr_info, is_ocr_available
+    OCR_AVAILABLE = is_ocr_available()
+    if OCR_AVAILABLE:
+        init_ocr()
+except ImportError:
+    OCR_AVAILABLE = False
+    print("Warning: OCR Integration not available")
+
 app = FastAPI(title="XeoKit BIM Converter & AI Analysis API", version="2.0.0", description="API complete pour la conversion et l analyse intelligente de fichiers BIM")
 
 # --- FONCTION : Conversion RVT -> IFC via pyRevit ---
@@ -362,7 +372,14 @@ else:
 # Configuration CORS pour permettre les requetes depuis le frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # En production, specifiez les domaines autorises
+    allow_origins=[
+        "http://localhost:5173",  # React frontend URL
+        "http://localhost:8081",  # xeokit-bim-viewer URL
+        "http://127.0.0.1:8081",  # Alternative localhost
+        "http://localhost:3000",  # Alternative React port
+        "http://127.0.0.1:3000",  # Alternative React port
+        "*"  # En production, specifiez les domaines autorises
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -9889,6 +9906,20 @@ def generate_time_series_value(metric, time_offset):
     noise = random.uniform(-base * 0.05, base * 0.05)
 
     return max(0, round(base + variation + noise, 2))
+
+# Include OCR Routers if available
+if OCR_AVAILABLE:
+    ocr_routers = get_ocr_routers()
+    for router, prefix, tags in ocr_routers:
+        app.include_router(router, prefix=prefix, tags=tags)
+    print("✓ OCR Modules integrated successfully")
+    
+    # Ajouter une route pour les informations OCR
+    @app.get("/ocr/info")
+    def get_ocr_status():
+        return get_ocr_info()
+else:
+    print("✗ OCR Modules not available - skipping integration")
 
 if __name__ == "__main__":
     import uvicorn

@@ -5,12 +5,12 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>BIMEX 2.0 - Mission Control Center</title>
+    <title>BIMEX - Mission Control Center</title>
     <link rel="stylesheet" href="./lib/fontawesome-free-5.11.2-web/css/all.min.css" type="text/css" />
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* Couleurs futuristes BIMEX 2.0 */
+            /* Couleurs futuristes BIMEX */
             --primary-neon: #00f5ff;
             --secondary-neon: #ff0080;
             --success-neon: #00ff88;
@@ -1303,7 +1303,7 @@
             <div class="logo-container">
                 <img src="../../images/logo1.png" alt="BIMEX Logo" class="logo-image" onerror="this.style.display='none'">
                 <div class="brand-text">
-                    <h1 class="hero-title">BIMEX 2.0</h1>
+                    <h1 class="hero-title">BIMEX</h1>
                     <p class="hero-subtitle">
                         Mission Control Center • Intelligence Artificielle • Analyse Avancée
                     </p>
@@ -2389,7 +2389,7 @@
                 sessionStorage.removeItem('autoModeConfigured');
                 sessionStorage.clear();
 
-                // Rediriger vers la nouvelle interface BIMEX 2.0 avec détection automatique
+                // Rediriger vers la nouvelle interface BIMEX avec détection automatique
                 window.location.href = `../../frontend/bim_analysis.html?project=${projectId}&auto=true&file_detected=true&step=detailed`;
             }, 2000);
         }

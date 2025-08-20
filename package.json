@@ -11,7 +11,13 @@
   "scripts": {
     "build": "npm run docs && npm run types",
     "docs": "rimraf ./docs/* && npx esdoc",
-    "types": "tsc"
+    "types": "tsc",
+    "start": "powershell -ExecutionPolicy Bypass -File .\\start-all-unified.ps1",
+    "start:backend": "powershell -ExecutionPolicy Bypass -File .\\start-backend.ps1",
+    "start:frontend": "powershell -ExecutionPolicy Bypass -File .\\start-frontend.ps1",
+    "start:ocr-frontend": "powershell -ExecutionPolicy Bypass -File .\\start-ocr-frontend.ps1",
+    "start:unified": "powershell -ExecutionPolicy Bypass -File .\\start-all-unified.ps1",
+    "start:batch": "start-all.bat"
   },
   "repository": {
     "type": "git",

@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BIMEX - Mission Control Center</title>
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* Couleurs futuristes BIMEX */
+            --primary-neon: #00f5ff;
+            --secondary-neon: #ff0080;
+            --success-neon: #00ff88;
+            --warning-neon: #ffaa00;
+            --danger-neon: #ff3366;
+            --purple-neon: #8b5cf6;
+            --gold-neon: #ffd700;
+
+            /* Arrière-plans sombres */
+            --bg-dark: #0a0a0f;
+            --bg-card: #1a1a2e;
+            --bg-glass: rgba(26, 26, 46, 0.8);
+            --bg-hover: rgba(0, 245, 255, 0.1);
+
+            /* Texte */
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --text-muted: #606070;
+
+            /* Effets */
+            --glow-primary: 0 0 20px rgba(0, 245, 255, 0.5);
+            --glow-secondary: 0 0 20px rgba(255, 0, 128, 0.5);
+            --glow-success: 0 0 20px rgba(0, 255, 136, 0.5);
+            --glow-gold: 0 0 20px rgba(255, 215, 0, 0.5);
+
+            /* Animations */
+            --transition-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-dark);
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--text-primary);
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Arrière-plan animé futuriste */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 20% 80%, rgba(0, 245, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 0, 128, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
+            z-index: -2;
+            animation: backgroundPulse 8s ease-in-out infinite;
+        }
+
+        @keyframes backgroundPulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+        }
+
+        /* Grille de fond style Matrix/Cyberpunk */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                linear-gradient(rgba(0, 245, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 245, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: -1;
+            animation: gridMove 20s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        /* Header futuriste BIMEX */
+        .main-header {
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            border-bottom: 2px solid var(--primary-neon);
+            padding: 1.5rem 2rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: var(--glow-primary);
+            animation: headerGlow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes headerGlow {
+            0% { box-shadow: var(--glow-primary); }
+            100% { box-shadow: var(--glow-secondary); }
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary-neon);
+            text-decoration: none;
+            font-family: 'JetBrains Mono', monospace;
+            text-shadow: var(--glow-primary);
+            transition: var(--transition-smooth);
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+            text-shadow: var(--glow-secondary);
+        }
+
+        .logo i {
+            font-size: 2.5rem;
+            color: var(--gold-neon);
+            text-shadow: var(--glow-gold);
+            animation: logoPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes logoPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav-btn {
+            padding: 15px 30px;
+            border: 2px solid transparent;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            position: relative;
+            overflow: hidden;
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .nav-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 245, 255, 0.3), transparent);
+            transition: left 0.6s;
+        }
+
+        .nav-btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-bim {
+            background: linear-gradient(135deg, var(--primary-neon), var(--purple-neon));
+            color: var(--bg-dark);
+            border-color: var(--primary-neon);
+            box-shadow: var(--glow-primary);
+        }
+
+        .btn-bim:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 10px 30px rgba(0, 245, 255, 0.6);
+            border-color: var(--secondary-neon);
+        }
+
+        .btn-ocr {
+            background: linear-gradient(135deg, var(--secondary-neon), var(--danger-neon));
+            color: var(--bg-dark);
+            border-color: var(--secondary-neon);
+            box-shadow: var(--glow-secondary);
+        }
+
+        .btn-ocr:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 10px 30px rgba(255, 0, 128, 0.6);
+            border-color: var(--primary-neon);
+        }
+
+        /* Contenu principal futuriste */
+        .main-content {
+            padding-top: 140px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: var(--text-primary);
+        }
+
+        .hero-section {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 3rem;
+            background: var(--bg-glass);
+            border: 2px solid var(--primary-neon);
+            border-radius: 20px;
+            backdrop-filter: blur(20px);
+            box-shadow: var(--glow-primary);
+            animation: heroFloat 6s ease-in-out infinite;
+        }
+
+        @keyframes heroFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .hero-title {
+            font-size: 4.5rem;
+            font-weight: 900;
+            margin-bottom: 2rem;
+            background: linear-gradient(45deg, var(--primary-neon), var(--secondary-neon), var(--gold-neon));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: var(--glow-primary);
+            font-family: 'JetBrains Mono', monospace;
+            letter-spacing: 2px;
+            animation: titleGlow 4s ease-in-out infinite alternate;
+        }
+
+        @keyframes titleGlow {
+            0% { text-shadow: var(--glow-primary); }
+            100% { text-shadow: var(--glow-secondary); }
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 3rem;
+            color: var(--text-secondary);
+            line-height: 1.8;
+            font-weight: 400;
+            max-width: 800px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 3rem;
+            margin-top: 5rem;
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        .feature-card {
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            border: 2px solid var(--primary-neon);
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            text-align: center;
+            transition: var(--transition-smooth);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--glow-primary);
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 245, 255, 0.1), transparent);
+            transition: left 0.8s;
+        }
+
+        .feature-card:hover::before {
+            left: 100%;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-15px) scale(1.05);
+            border-color: var(--secondary-neon);
+            box-shadow: var(--glow-secondary);
+        }
+
+        .feature-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(45deg, var(--primary-neon), var(--secondary-neon));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: iconFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes iconFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .feature-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--primary-neon);
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .feature-description {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            font-size: 1.1rem;
+        }
+
+        /* Animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .floating-elements {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .floating-element {
+            position: absolute;
+            opacity: 0.8;
+            animation: float 8s ease-in-out infinite;
+            filter: drop-shadow(0 0 20px currentColor);
+        }
+
+        .floating-element:nth-child(1) {
+            top: 15%;
+            left: 8%;
+            animation-delay: 0s;
+        }
+
+        .floating-element:nth-child(2) {
+            top: 55%;
+            right: 12%;
+            animation-delay: 2s;
+        }
+
+        .floating-element:nth-child(3) {
+            bottom: 25%;
+            left: 15%;
+            animation-delay: 4s;
+        }
+
+        .floating-element:nth-child(4) {
+            top: 35%;
+            right: 25%;
+            animation-delay: 6s;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .nav-buttons {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .nav-btn {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+                padding: 0 1rem;
+            }
+        }
+
+        /* Effet de particules quantiques */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: var(--primary-neon);
+            border-radius: 50%;
+            animation: particle-float 10s linear infinite;
+            filter: blur(1px);
+        }
+
+        @keyframes particle-float {
+            0% {
+                transform: translateY(100vh) rotate(0deg) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+                transform: translateY(90vh) rotate(36deg) scale(1);
+            }
+            50% {
+                transform: translateY(50vh) rotate(180deg) scale(1.5);
+            }
+            90% {
+                opacity: 1;
+                transform: translateY(10vh) rotate(324deg) scale(1);
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg) scale(0);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header futuriste BIMEX -->
+    <header class="main-header">
+        <div class="header-content">
+            <a href="#" class="logo">
+                <i class="fas fa-rocket"></i>
+                <span>BIMEX</span>
+            </a>
+            
+            <div class="nav-buttons">
+                <a href="http://localhost:8001/app/home.html" class="nav-btn btn-bim">
+                    <i class="fas fa-cube"></i>
+                    BIM MODELS
+                </a>
+                <a href="http://localhost:5173/" class="nav-btn btn-ocr">
+                    <i class="fas fa-brain"></i>
+                    OCR BLUEPRINT
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Contenu principal futuriste -->
+    <main class="main-content">
+        <div class="hero-section">
+            <h1 class="hero-title">MISSION CONTROL CENTER</h1>
+            <p class="hero-subtitle">
+                Bienvenue dans le futur de l'analyse BIM et OCR. BIMEX combine la puissance de la visualisation 3D 
+                avec l'intelligence artificielle pour révolutionner vos projets de construction.
+            </p>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card" onclick="navigateToBIM()">
+                <div class="feature-icon">
+                    <i class="fas fa-cube"></i>
+                </div>
+                <h3 class="feature-title">BIM MODELS</h3>
+                <p class="feature-description">
+                    Explorez l'univers 3D de vos modèles BIM avec des outils de navigation avancés. 
+                    Analysez les propriétés, géométries et métadonnées en temps réel.
+                </p>
+            </div>
+
+            <div class="feature-card" onclick="navigateToOCR()">
+                <div class="feature-icon">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <h3 class="feature-title">OCR BLUEPRINT</h3>
+                <p class="feature-description">
+                    Intelligence artificielle au service de l'analyse documentaire. 
+                    Extraction automatique de texte, mesures et symboles avec précision militaire.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-rocket"></i>
+                </div>
+                <h3 class="feature-title">FUSION QUANTIQUE</h3>
+                <p class="feature-description">
+                    L'union parfaite entre BIM et OCR crée une plateforme révolutionnaire. 
+                    Analyse complète et intelligente de vos projets de construction.
+                </p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Éléments flottants futuristes -->
+    <div class="floating-elements">
+        <div class="floating-element">
+            <i class="fas fa-rocket" style="font-size: 5rem; color: var(--primary-neon); text-shadow: var(--glow-primary);"></i>
+        </div>
+        <div class="floating-element">
+            <i class="fas fa-brain" style="font-size: 4rem; color: var(--secondary-neon); text-shadow: var(--glow-secondary);"></i>
+        </div>
+        <div class="floating-element">
+            <i class="fas fa-cube" style="font-size: 4.5rem; color: var(--gold-neon); text-shadow: var(--glow-gold);"></i>
+        </div>
+        <div class="floating-element">
+            <i class="fas fa-microchip" style="font-size: 3.5rem; color: var(--purple-neon); text-shadow: var(--glow-primary);"></i>
+        </div>
+    </div>
+
+    <!-- Particules quantiques animées -->
+    <div class="particles" id="particles"></div>
+
+    <script>
+        // Navigation vers BIM Models (backend sur port 8001)
+        function navigateToBIM() {
+            window.location.href = 'http://localhost:8001/app/home.html';
+        }
+
+        // Navigation vers OCR Blueprint (serveur Vite sur port 5173)
+        function navigateToOCR() {
+            window.location.href = 'http://localhost:5173/';
+        }
+
+        // Création des particules quantiques
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 80;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                // Position et propriétés aléatoires
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 10 + 's';
+                particle.style.animationDuration = (Math.random() * 4 + 6) + 's';
+                particle.style.background = `hsl(${Math.random() * 360}, 70%, 60%)`;
+                particle.style.boxShadow = `0 0 ${Math.random() * 20 + 10}px currentColor`;
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Animation des cartes au scroll
+        function animateCards() {
+            const cards = document.querySelectorAll('.feature-card');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            });
+
+            cards.forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(50px)';
+                card.style.transition = 'all 0.6s ease';
+                observer.observe(card);
+            });
+        }
+
+        // Initialisation au chargement de la page
+        window.addEventListener('load', () => {
+            createParticles();
+            animateCards();
+        });
+
+        // Effet de parallaxe sur le scroll
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const parallax = document.querySelector('.floating-elements');
+            parallax.style.transform = `translateY(${scrolled * 0.5}px)`;
+        });
+    </script>
+</body>
+</html>
