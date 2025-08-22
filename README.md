@@ -1,5 +1,11 @@
 BIMEX / xeokit-convert2 — Documentation complète du projet
 
+<video width="800" controls>
+  <source src="DemoVersionFinal.mp4" type="video/mp4">
+  Votre navigateur ne supporte pas la lecture vidéo.
+</video>
+
+
 ## Vue d’ensemble
 
 Plateforme complète d’analyse et de visualisation BIM combinant :
