@@ -1,0 +1,18 @@
+streamlit
+opencv-python
+pytesseract
+pandas
+numpy
+ultralytics
+pyyaml
+openpyxl
+spacy
+fastapi
+uvicorn[standard]
+python-multipart     # for file uploads
+pandas
+numpy
+opencv-python
+pytesseract
+ultralytics
+jsonschema

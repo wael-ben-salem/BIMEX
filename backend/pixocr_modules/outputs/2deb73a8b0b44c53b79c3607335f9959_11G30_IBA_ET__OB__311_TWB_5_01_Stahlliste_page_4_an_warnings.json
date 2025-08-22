@@ -1,0 +1,95 @@
+[
+  {
+    "header_warning": "Missing DRAWING_NO in header"
+  },
+  {
+    "header_warning": "Missing PROJECT in header"
+  },
+  {
+    "header_warning": "Missing DATE in header"
+  },
+  {
+    "table": 0,
+    "row": 1,
+    "field": null,
+    "message": "'length_m' is a required property"
+  },
+  {
+    "table": 0,
+    "row": 1,
+    "field": "weight_kg",
+    "message": "None is not of type 'number'"
+  },
+  {
+    "table": 0,
+    "row": 1,
+    "field": null,
+    "message": "Additional properties are not allowed ('unit_length_m' was unexpected)"
+  },
+  {
+    "table": 0,
+    "row": 2,
+    "field": null,
+    "message": "'length_m' is a required property"
+  },
+  {
+    "table": 0,
+    "row": 2,
+    "field": "position",
+    "message": "0 is less than the minimum of 1"
+  },
+  {
+    "table": 0,
+    "row": 2,
+    "field": "quantity",
+    "message": "nan is not of type 'integer'"
+  },
+  {
+    "table": 0,
+    "row": 2,
+    "field": "weight_kg",
+    "message": "None is not of type 'number'"
+  },
+  {
+    "table": 0,
+    "row": 2,
+    "field": null,
+    "message": "Additional properties are not allowed ('unit_length_m' was unexpected)"
+  },
+  {
+    "table": 0,
+    "row": 1,
+    "field": "total_length_m",
+    "message": "Missing or invalid value"
+  },
+  {
+    "table": 0,
+    "row": 1,
+    "field": "weight_kg",
+    "message": "Missing or invalid value"
+  },
+  {
+    "table": 0,
+    "row": 1,
+    "field": "diameter_mm",
+    "message": "Unexpected Ø value 2 mm"
+  },
+  {
+    "table": 0,
+    "row": 2,
+    "field": "quantity",
+    "message": "Missing or invalid value"
+  },
+  {
+    "table": 0,
+    "row": 2,
+    "field": "weight_kg",
+    "message": "Missing or invalid value"
+  },
+  {
+    "table": 0,
+    "row": 2,
+    "field": "diameter_mm",
+    "message": "Unexpected Ø value 324 mm"
+  }
+]

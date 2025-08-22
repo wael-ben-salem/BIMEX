@@ -1,0 +1,182 @@
+[
+  {
+    "table": 0,
+    "row": 1,
+    "field": null,
+    "message": "'length_m' is a required property"
+  },
+  {
+    "table": 0,
+    "row": 1,
+    "field": null,
+    "message": "Additional properties are not allowed ('unit_length_m' was unexpected)"
+  },
+  {
+    "table": 0,
+    "row": 2,
+    "field": null,
+    "message": "'length_m' is a required property"
+  },
+  {
+    "table": 0,
+    "row": 2,
+    "field": null,
+    "message": "Additional properties are not allowed ('unit_length_m' was unexpected)"
+  },
+  {
+    "table": 0,
+    "row": 3,
+    "field": null,
+    "message": "'length_m' is a required property"
+  },
+  {
+    "table": 0,
+    "row": 3,
+    "field": null,
+    "message": "Additional properties are not allowed ('unit_length_m' was unexpected)"
+  },
+  {
+    "table": 0,
+    "row": 4,
+    "field": null,
+    "message": "'length_m' is a required property"
+  },
+  {
+    "table": 0,
+    "row": 4,
+    "field": null,
+    "message": "Additional properties are not allowed ('unit_length_m' was unexpected)"
+  },
+  {
+    "table": 0,
+    "row": 5,
+    "field": null,
+    "message": "'length_m' is a required property"
+  },
+  {
+    "table": 0,
+    "row": 5,
+    "field": null,
+    "message": "Additional properties are not allowed ('unit_length_m' was unexpected)"
+  },
+  {
+    "table": 0,
+    "row": 6,
+    "field": null,
+    "message": "'length_m' is a required property"
+  },
+  {
+    "table": 0,
+    "row": 6,
+    "field": null,
+    "message": "Additional properties are not allowed ('unit_length_m' was unexpected)"
+  },
+  {
+    "table": 0,
+    "row": 1,
+    "field": "diameter_mm",
+    "message": "Unexpected Ø value 495 mm"
+  },
+  {
+    "table": 0,
+    "row": 1,
+    "field": "total_length_m",
+    "message": "Gesamtlänge mismatch: 386.1 vs qty×Einzellänge 38669.40 (±1160.08)"
+  },
+  {
+    "table": 0,
+    "row": 1,
+    "field": "weight_kg",
+    "message": "Gewicht mismatch: 342.86 vs expected 583976.25 (±29198.81)"
+  },
+  {
+    "table": 0,
+    "row": 2,
+    "field": "diameter_mm",
+    "message": "Unexpected Ø value 400 mm"
+  },
+  {
+    "table": 0,
+    "row": 2,
+    "field": "total_length_m",
+    "message": "Gesamtlänge mismatch: 8.0 vs qty×Einzellänge 812.00 (±24.36)"
+  },
+  {
+    "table": 0,
+    "row": 2,
+    "field": "weight_kg",
+    "message": "Gewicht mismatch: 7.1 vs expected 7901.23 (±395.06)"
+  },
+  {
+    "table": 0,
+    "row": 3,
+    "field": "diameter_mm",
+    "message": "Unexpected Ø value 495 mm"
+  },
+  {
+    "table": 0,
+    "row": 3,
+    "field": "total_length_m",
+    "message": "Gesamtlänge mismatch: 59.4 vs qty×Einzellänge 6019.20 (±180.58)"
+  },
+  {
+    "table": 0,
+    "row": 3,
+    "field": "weight_kg",
+    "message": "Gewicht mismatch: 93.85 vs expected 89842.50 (±4492.12)"
+  },
+  {
+    "table": 0,
+    "row": 4,
+    "field": "diameter_mm",
+    "message": "Unexpected Ø value 250 mm"
+  },
+  {
+    "table": 0,
+    "row": 4,
+    "field": "total_length_m",
+    "message": "Gesamtlänge mismatch: 20.0 vs qty×Einzellänge 2040.00 (±61.20)"
+  },
+  {
+    "table": 0,
+    "row": 4,
+    "field": "weight_kg",
+    "message": "Gewicht mismatch: 31.6 vs expected 7716.05 (±385.80)"
+  },
+  {
+    "table": 0,
+    "row": 5,
+    "field": "diameter_mm",
+    "message": "Unexpected Ø value 555 mm"
+  },
+  {
+    "table": 0,
+    "row": 5,
+    "field": "total_length_m",
+    "message": "Gesamtlänge mismatch: 199.8 vs qty×Einzellänge 20046.60 (±601.40)"
+  },
+  {
+    "table": 0,
+    "row": 5,
+    "field": "weight_kg",
+    "message": "Gewicht mismatch: 177.42 vs expected 379897.50 (±18994.88)"
+  },
+  {
+    "table": 0,
+    "row": 6,
+    "field": "diameter_mm",
+    "message": "Unexpected Ø value 515 mm"
+  },
+  {
+    "table": 0,
+    "row": 6,
+    "field": "total_length_m",
+    "message": "Gesamtlänge mismatch: 20.6 vs qty×Einzellänge 2121.80 (±63.65)"
+  },
+  {
+    "table": 0,
+    "row": 6,
+    "field": "weight_kg",
+    "message": "Gewicht mismatch: 18.29 vs expected 33726.14 (±1686.31)"
+  }
+]

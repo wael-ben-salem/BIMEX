@@ -1,0 +1,506 @@
+[
+  {
+    "text": "are,",
+    "left": 2015,
+    "top": 98,
+    "width": 71,
+    "height": 28,
+    "conf": 46.0
+  },
+  {
+    "text": "5",
+    "left": 2011,
+    "top": 128,
+    "width": 79,
+    "height": 45,
+    "conf": 38.0
+  },
+  {
+    "text": "Allplan",
+    "left": 2104,
+    "top": 110,
+    "width": 191,
+    "height": 71,
+    "conf": 79.0
+  },
+  {
+    "text": "Stabliste",
+    "left": 246,
+    "top": 181,
+    "width": 188,
+    "height": 34,
+    "conf": 91.0
+  },
+  {
+    "text": "-",
+    "left": 451,
+    "top": 199,
+    "width": 13,
+    "height": 6,
+    "conf": 92.0
+  },
+  {
+    "text": "Biegeformen",
+    "left": 480,
+    "top": 181,
+    "width": 273,
+    "height": 43,
+    "conf": 91.0
+  },
+  {
+    "text": "Projekt:",
+    "left": 247,
+    "top": 267,
+    "width": 108,
+    "height": 41,
+    "conf": 96.0
+  },
+  {
+    "text": "G1455_BW6.1,",
+    "left": 482,
+    "top": 272,
+    "width": 223,
+    "height": 31,
+    "conf": 79.0
+  },
+  {
+    "text": "zu",
+    "left": 245,
+    "top": 327,
+    "width": 33,
+    "height": 17,
+    "conf": 96.0
+  },
+  {
+    "text": "Plan:",
+    "left": 291,
+    "top": 320,
+    "width": 71,
+    "height": 24,
+    "conf": 96.0
+  },
+  {
+    "text": "BO02",
+    "left": 483,
+    "top": 320,
+    "width": 74,
+    "height": 24,
+    "conf": 70.0
+  },
+  {
+    "text": "Bearbeiter:",
+    "left": 247,
+    "top": 363,
+    "width": 158,
+    "height": 40,
+    "conf": 92.0
+  },
+  {
+    "text": "S.Kas",
+    "left": 482,
+    "top": 367,
+    "width": 86,
+    "height": 24,
+    "conf": 92.0
+  },
+  {
+    "text": "Datum",
+    "left": 247,
+    "top": 414,
+    "width": 94,
+    "height": 24,
+    "conf": 92.0
+  },
+  {
+    "text": "/",
+    "left": 352,
+    "top": 414,
+    "width": 9,
+    "height": 24,
+    "conf": 93.0
+  },
+  {
+    "text": "Zeit:",
+    "left": 371,
+    "top": 414,
+    "width": 61,
+    "height": 24,
+    "conf": 88.0
+  },
+  {
+    "text": "17.01.2018",
+    "left": 484,
+    "top": 414,
+    "width": 162,
+    "height": 24,
+    "conf": 91.0
+  },
+  {
+    "text": "/",
+    "left": 666,
+    "top": 414,
+    "width": 9,
+    "height": 24,
+    "conf": 92.0
+  },
+  {
+    "text": "15:19",
+    "left": 697,
+    "top": 414,
+    "width": 79,
+    "height": 24,
+    "conf": 90.0
+  },
+  {
+    "text": "Hinweis:",
+    "left": 247,
+    "top": 461,
+    "width": 120,
+    "height": 24,
+    "conf": 91.0
+  },
+  {
+    "text": "Alle",
+    "left": 245,
+    "top": 567,
+    "width": 59,
+    "height": 24,
+    "conf": 92.0
+  },
+  {
+    "text": "Stabformen",
+    "left": 316,
+    "top": 567,
+    "width": 182,
+    "height": 24,
+    "conf": 90.0
+  },
+  {
+    "text": "Position",
+    "left": 247,
+    "top": 634,
+    "width": 127,
+    "height": 40,
+    "conf": 92.0
+  },
+  {
+    "text": "Stück",
+    "left": 440,
+    "top": 638,
+    "width": 89,
+    "height": 24,
+    "conf": 93.0
+  },
+  {
+    "text": "@",
+    "left": 638,
+    "top": 637,
+    "width": 23,
+    "height": 26,
+    "conf": 73.0
+  },
+  {
+    "text": "Bemafte",
+    "left": 984,
+    "top": 638,
+    "width": 137,
+    "height": 24,
+    "conf": 68.0
+  },
+  {
+    "text": "Biegeform",
+    "left": 1134,
+    "top": 638,
+    "width": 160,
+    "height": 31,
+    "conf": 91.0
+  },
+  {
+    "text": "Einzel-",
+    "left": 1711,
+    "top": 634,
+    "width": 105,
+    "height": 40,
+    "conf": 92.0
+  },
+  {
+    "text": "Gesant-",
+    "left": 1974,
+    "top": 634,
+    "width": 131,
+    "height": 40,
+    "conf": 88.0
+  },
+  {
+    "text": "Gewicht",
+    "left": 2214,
+    "top": 638,
+    "width": 128,
+    "height": 24,
+    "conf": 95.0
+  },
+  {
+    "text": "[mm]",
+    "left": 611,
+    "top": 675,
+    "width": 77,
+    "height": 31,
+    "conf": 94.0
+  },
+  {
+    "text": "lange",
+    "left": 1670,
+    "top": 675,
+    "width": 84,
+    "height": 31,
+    "conf": 93.0
+  },
+  {
+    "text": "[m]",
+    "left": 1767,
+    "top": 675,
+    "width": 47,
+    "height": 31,
+    "conf": 91.0
+  },
+  {
+    "text": "lange",
+    "left": 1960,
+    "top": 675,
+    "width": 83,
+    "height": 31,
+    "conf": 93.0
+  },
+  {
+    "text": "[m]",
+    "left": 2056,
+    "top": 675,
+    "width": 47,
+    "height": 31,
+    "conf": 93.0
+  },
+  {
+    "text": "[kg]",
+    "left": 2283,
+    "top": 675,
+    "width": 56,
+    "height": 31,
+    "conf": 96.0
+  },
+  {
+    "text": "=",
+    "left": 1202,
+    "top": 836,
+    "width": 19,
+    "height": 25,
+    "conf": 60.0
+  },
+  {
+    "text": "9",
+    "left": 311,
+    "top": 859,
+    "width": 16,
+    "height": 24,
+    "conf": 93.0
+  },
+  {
+    "text": "60",
+    "left": 467,
+    "top": 859,
+    "width": 34,
+    "height": 24,
+    "conf": 96.0
+  },
+  {
+    "text": "16",
+    "left": 635,
+    "top": 859,
+    "width": 32,
+    "height": 24,
+    "conf": 97.0
+  },
+  {
+    "text": "=",
+    "left": 1202,
+    "top": 871,
+    "width": 19,
+    "height": 5,
+    "conf": 90.0
+  },
+  {
+    "text": "4.78",
+    "left": 1752,
+    "top": 859,
+    "width": 63,
+    "height": 24,
+    "conf": 96.0
+  },
+  {
+    "text": "286,80",
+    "left": 2004,
+    "top": 859,
+    "width": 100,
+    "height": 28,
+    "conf": 96.0
+  },
+  {
+    "text": "453,14",
+    "left": 2240,
+    "top": 859,
+    "width": 100,
+    "height": 29,
+    "conf": 96.0
+  },
+  {
+    "text": "N",
+    "left": 956,
+    "top": 946,
+    "width": 21,
+    "height": 11,
+    "conf": 35.0
+  },
+  {
+    "text": "109",
+    "left": 1069,
+    "top": 966,
+    "width": 40,
+    "height": 21,
+    "conf": 95.0
+  },
+  {
+    "text": "Summe",
+    "left": 246,
+    "top": 1033,
+    "width": 118,
+    "height": 24,
+    "conf": 91.0
+  },
+  {
+    "text": "Bewehrung",
+    "left": 376,
+    "top": 1033,
+    "width": 178,
+    "height": 31,
+    "conf": 91.0
+  },
+  {
+    "text": "Fundament",
+    "left": 567,
+    "top": 1033,
+    "width": 177,
+    "height": 24,
+    "conf": 91.0
+  },
+  {
+    "text": "Mittelpfeiler",
+    "left": 756,
+    "top": 1033,
+    "width": 185,
+    "height": 31,
+    "conf": 92.0
+  },
+  {
+    "text": "4.093,16",
+    "left": 2213,
+    "top": 1033,
+    "width": 127,
+    "height": 29,
+    "conf": 89.0
+  },
+  {
+    "text": "Summe",
+    "left": 246,
+    "top": 1128,
+    "width": 118,
+    "height": 24,
+    "conf": 92.0
+  },
+  {
+    "text": "über",
+    "left": 376,
+    "top": 1128,
+    "width": 71,
+    "height": 24,
+    "conf": 89.0
+  },
+  {
+    "text": "alle",
+    "left": 457,
+    "top": 1128,
+    "width": 53,
+    "height": 24,
+    "conf": 92.0
+  },
+  {
+    "text": "Bauteile",
+    "left": 523,
+    "top": 1128,
+    "width": 126,
+    "height": 24,
+    "conf": 91.0
+  },
+  {
+    "text": "4.093,16",
+    "left": 2213,
+    "top": 1128,
+    "width": 127,
+    "height": 29,
+    "conf": 89.0
+  },
+  {
+    "text": "Anzahl",
+    "left": 245,
+    "top": 1199,
+    "width": 99,
+    "height": 24,
+    "conf": 92.0
+  },
+  {
+    "text": "der",
+    "left": 357,
+    "top": 1199,
+    "width": 47,
+    "height": 24,
+    "conf": 92.0
+  },
+  {
+    "text": "Ausführungen",
+    "left": 413,
+    "top": 1199,
+    "width": 205,
+    "height": 31,
+    "conf": 93.0
+  },
+  {
+    "text": "1",
+    "left": 2327,
+    "top": 1199,
+    "width": 9,
+    "height": 24,
+    "conf": 96.0
+  },
+  {
+    "text": "Gesamtgewicht",
+    "left": 246,
+    "top": 1265,
+    "width": 245,
+    "height": 39,
+    "conf": 92.0
+  },
+  {
+    "text": "4.093,16",
+    "left": 2213,
+    "top": 1269,
+    "width": 127,
+    "height": 29,
+    "conf": 89.0
+  },
+  {
+    "text": "3/3",
+    "left": 2297,
+    "top": 3321,
+    "width": 43,
+    "height": 24,
+    "conf": 92.0
+  }
+]

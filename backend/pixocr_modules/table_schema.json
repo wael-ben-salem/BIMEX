@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": [
+    "position",
+    "quantity",
+    "diameter_mm",
+    "length_m",
+    "total_length_m",
+    "weight_kg"
+  ],
+  "properties": {
+    "position":      { "type": "integer", "minimum": 1 },
+    "quantity":      { "type": "integer", "minimum": 1 },
+    "diameter_mm":   { "type": "number",  "minimum": 1 },
+    "length_m":      { "type": "number",  "minimum": 0.1 },
+    "total_length_m":{ "type": "number",  "minimum": 0.1 },
+    "weight_kg":     { "type": "number",  "minimum": 0.1 }
+  },
+  "additionalProperties": false
+}

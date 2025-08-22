@@ -1,4 +1,3 @@
-
 from fastapi import FastAPI, File, UploadFile, HTTPException, Form, Query, Request, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, FileResponse, HTMLResponse, RedirectResponse, StreamingResponse, Response
@@ -33,6 +32,16 @@ try:
 except ImportError:
     OCR_AVAILABLE = False
     print("Warning: OCR Integration not available")
+
+# Import PixOCR Integration
+try:
+    from pixocr_integration import get_pix_app, init_pix, get_pix_info, is_pix_available
+    PIX_AVAILABLE = is_pix_available()
+    if PIX_AVAILABLE:
+        init_pix()
+except ImportError:
+    PIX_AVAILABLE = False
+    print("Warning: PixOCR Integration not available")
 
 app = FastAPI(title="XeoKit BIM Converter & AI Analysis API", version="2.0.0", description="API complete pour la conversion et l analyse intelligente de fichiers BIM")
 
@@ -358,7 +367,7 @@ async def upload_rvt(
 # Configuration des templates
 templates = Jinja2Templates(directory=os.path.join(os.path.dirname(__file__), 'templates'))
 
-# ...existing code...
+# ...rest of the code...
 static_path = Path(__file__).resolve().parent.parent / "static"
 print("[EMOJI] static_path ABSOLU =", static_path)
 
@@ -559,7 +568,6 @@ def generate_dynamic_references(building_type=None, has_pmr_analysis=False, has_
         })
 
     return references
-
 def generate_dynamic_glossary(has_pmr_analysis=False, has_environmental_analysis=False,
                             has_cost_analysis=False, has_optimization_analysis=False, building_type=None):
     """[EMOJI] Genere le glossaire dynamique selon les analyses presentes"""
@@ -1167,7 +1175,1183 @@ def generate_dynamic_recommendations(critical_anomalies, high_anomalies, medium_
     recommendations.append("[EMOJI] Coordination: Assurer la coordination entre les disciplines (architecture, structure, MEP).")
 
     return recommendations
+from fastapi import FastAPI, File, UploadFile, HTTPException, Form, Query, Request, BackgroundTasks
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse, FileResponse, HTMLResponse, RedirectResponse, StreamingResponse, Response
+from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
+import os
+import json
+import shutil
+from datetime import datetime, timedelta
+import asyncio
+import math
+import random
+import subprocess
+import tempfile
+from pathlib import Path
+import io
+import zipfile
+import pandas as pd
+from typing import Optional, List, Dict, Any
+import uuid
+import threading
+import logging
+import re
+from dotenv import load_dotenv
 
+# Import OCR Integration
+try:
+    from ocr_integration import get_ocr_routers, init_ocr, get_ocr_info, is_ocr_available
+    OCR_AVAILABLE = is_ocr_available()
+    if OCR_AVAILABLE:
+        init_ocr()
+except ImportError:
+    OCR_AVAILABLE = False
+    print("Warning: OCR Integration not available")
+
+# Import PixOCR Integration
+try:
+    from pixocr_integration import get_pix_app, init_pix, get_pix_info, is_pix_available
+    PIX_AVAILABLE = is_pix_available()
+    if PIX_AVAILABLE:
+        init_pix()
+except ImportError:
+    PIX_AVAILABLE = False
+    print("Warning: PixOCR Integration not available")
+
+app = FastAPI(title="XeoKit BIM Converter & AI Analysis API", version="2.0.0", description="API complete pour la conversion et l analyse intelligente de fichiers BIM")
+
+# --- FONCTION : Conversion RVT -> IFC via pyRevit ---
+
+# Fonction pour lancer la conversion RVT -> IFC via pyRevit
+def convert_rvt_to_ifc_pyrevit(rvt_path, output_ifc_path):
+    """
+    Convertit un fichier RVT en IFC en utilisant pyRevit et Revit
+    Cette fonction depose le fichier RVT dans un dossier surveille par pyRevit
+    et attend que la conversion soit terminee
+    """
+    import shutil
+    import time
+    
+    # Dossier surveille par pyRevit (a configurer dans pyRevit)
+    WATCHED_FOLDER = r"C:\RVT_WATCH_FOLDER"
+    
+    try:
+        # Creer le dossier surveille s il n existe pas
+        if not os.path.exists(WATCHED_FOLDER):
+            os.makedirs(WATCHED_FOLDER)
+            print(f"[CHECK] Dossier surveille cree : {WATCHED_FOLDER}")
+        
+        # Copier le fichier RVT dans le dossier surveille
+        dest_path = os.path.join(WATCHED_FOLDER, os.path.basename(rvt_path))
+        shutil.copy2(rvt_path, dest_path)
+        print(f"[CHECK] Fichier RVT depose dans le dossier surveille : {dest_path}")
+        
+        # Attendre que le fichier IFC apparaisse (conversion faite par pyRevit/Revit)
+        rvt_filename = os.path.splitext(os.path.basename(rvt_path))[0]
+        expected_ifc_path = os.path.join(WATCHED_FOLDER, f"{rvt_filename}.ifc")
+        
+        print(f"[SEARCH] Attente de la conversion RVT->IFC...")
+        print(f"[EMOJI] Fichier IFC attendu : {expected_ifc_path}")
+        
+        # Attendre la conversion (max 10 minutes)
+        for attempt in range(120):  # 120 * 5 secondes = 10 minutes
+            if os.path.exists(expected_ifc_path):
+                print(f"[CHECK] Conversion RVT->IFC detectee : {expected_ifc_path}")
+                
+                # Copier l IFC dans le dossier du projet
+                shutil.copy2(expected_ifc_path, output_ifc_path)
+                print(f"[CHECK] Fichier IFC copie vers : {output_ifc_path}")
+                
+                # Nettoyer le fichier temporaire dans le dossier surveille
+                try:
+                    os.remove(expected_ifc_path)
+                    print(f"[EMOJI] Fichier IFC temporaire nettoye")
+                except:
+                    pass
+                
+                return True
+            
+            # Afficher le progres toutes les 30 secondes
+            if attempt % 6 == 0:
+                print(f"[EMOJI] Attente conversion... ({attempt * 5}s ecoulees)")
+            
+            time.sleep(5)
+        
+        print(f"[CROSS] Conversion RVT->IFC non detectee apres 10 minutes")
+        return False
+        
+    except Exception as e:
+        print(f"[CROSS] Exception lors de la conversion RVT->IFC : {e}")
+        import traceback
+        traceback.print_exc()
+        return False
+
+# --- FIN FONCTION ---
+
+# Traite un fichier RVT uploade en le confiant a pyRevit pour conversion, puis finalise (copie, XKT, index)
+def process_rvt_with_pyrevit(rvt_saved_path: str, model_dir: str, project_id: str, project_name: str, conversion_id: str) -> None:
+    try:
+        WATCHED_FOLDER = r"C:\RVT_WATCH_FOLDER"
+
+        # Demarrer le suivi si disponible
+        try:
+            conversion_status.start_conversion(conversion_id, f"{project_name} (RVT)")
+            conversion_status.update_conversion(conversion_id, 10, "Preparation du fichier RVT...")
+        except Exception:
+            pass
+
+        # Deposer une copie du RVT dans le dossier surveille avec le nom original
+        os.makedirs(WATCHED_FOLDER, exist_ok=True)
+        original_filename = os.path.basename(rvt_saved_path)  # "geometry.rvt"
+        # Utiliser un nom unique base sur le nom original + timestamp pour eviter les conflits
+        import time
+        timestamp = int(time.time())
+        unique_rvt_name = f"{os.path.splitext(original_filename)[0]}_{timestamp}.rvt"
+        temp_rvt_path = os.path.join(WATCHED_FOLDER, unique_rvt_name)
+
+        # S assurer que le RVT est bien present dans le dossier du projet (geometry.rvt)
+        final_rvt_path = os.path.join(model_dir, "geometry.rvt")
+        if rvt_saved_path != final_rvt_path:
+            shutil.copy2(rvt_saved_path, final_rvt_path)
+
+        shutil.copy2(final_rvt_path, temp_rvt_path)
+
+        # Attendre la conversion par pyRevit
+        temp_ifc_path = os.path.join(WATCHED_FOLDER, f"{os.path.splitext(unique_rvt_name)[0]}.ifc")
+        expected_ifc_in_project = os.path.join(model_dir, "geometry.ifc")
+
+        try:
+            conversion_status.update_conversion(conversion_id, 30, "Attente de la conversion RVT->IFC par pyRevit...")
+        except Exception:
+            pass
+
+        max_wait_seconds = 10 * 60  # 10 minutes
+        waited = 0
+        poll = 5
+        
+        # Attendre que le fichier IFC soit généré par pyRevit
+        while waited < max_wait_seconds:
+            if os.path.exists(temp_ifc_path):
+                break
+            time.sleep(poll)
+            waited += poll
+            
+        if waited >= max_wait_seconds:
+            try:
+                conversion_status.complete_conversion(conversion_id, False, "Timeout: IFC non detectee (pyRevit)")
+            except Exception:
+                pass
+            return
+
+        # Copier l IFC genere vers le projet et nettoyer
+        os.makedirs(model_dir, exist_ok=True)
+        shutil.copy2(temp_ifc_path, expected_ifc_in_project)
+
+        try:
+            os.remove(temp_ifc_path)
+            os.remove(temp_rvt_path)
+        except Exception:
+            pass
+
+        try:
+            conversion_status.update_conversion(conversion_id, 70, "Conversion IFC->XKT...")
+        except Exception:
+            pass
+
+        # Conversion IFC -> XKT
+        success = convert_ifc_to_xkt(expected_ifc_in_project, model_dir, conversion_id, start_progress=70)
+
+        if success:
+            # Ajouter le projet a l index
+            try:
+                add_project_to_index(project_id, project_name)
+            except Exception:
+                pass
+
+            try:
+                conversion_status.complete_conversion(conversion_id, True, "Conversion RVT->IFC->XKT terminee")
+            except Exception:
+                pass
+        else:
+            try:
+                conversion_status.complete_conversion(conversion_id, False, "Erreur lors de la conversion IFC->XKT")
+            except Exception:
+                pass
+    except Exception as e:
+        try:
+            conversion_status.complete_conversion(conversion_id, False, f"Erreur traitement RVT: {str(e)}")
+        except Exception:
+            pass
+
+# Charger les variables d environnement depuis le fichier .env
+load_dotenv()
+
+logger = logging.getLogger("BIM_API")
+logger.setLevel(logging.INFO)
+
+# Importer nos nouveaux modules d analyse BIM
+try:
+    from ifc_analyzer import IFCAnalyzer
+    IFCOPENSHELL_AVAILABLE = True
+except ImportError:
+    from ifc_analyzer_fallback import IFCAnalyzerFallback as IFCAnalyzer
+    IFCOPENSHELL_AVAILABLE = False
+    logger.warning("ifcopenshell non disponible - utilisation du mode de secours")
+
+try:
+    from anomaly_detector import IFCAnomalyDetector
+except ImportError:
+    IFCAnomalyDetector = None
+    logger.warning("Detection d anomalies non disponible")
+
+try:
+    from building_classifier import BuildingClassifier
+except ImportError:
+    BuildingClassifier = None
+    logger.warning("Classification non disponible")
+
+try:
+    from rvt_converter import RVTConverter
+except ImportError:
+    RVTConverter = None
+    logger.warning("Convertisseur RVT non disponible")
+
+try:
+    from bi_integration import (
+        bi_manager, SupersetConnector, IFCViewerConnector,
+        N8nConnector, ERPNextConnector, BIMModelData
+    )
+    BI_INTEGRATION_AVAILABLE = True
+    logger.info("[ROCKET] Module Business Intelligence charge (Superset + IFC.js + n8n + ERPNext)")
+except ImportError:
+    BI_INTEGRATION_AVAILABLE = False
+    logger.warning("Module BI non disponible")
+
+try:
+    from bim_assistant_ollama import OllamaBIMAssistant as BIMAssistant
+    logger.info("Assistant BIM Ollama charge (IA locale)")
+except ImportError:
+    try:
+        from bim_assistant_simple import SimpleBIMAssistant as BIMAssistant
+        logger.info("Assistant BIM simple charge (sans dependances externes)")
+    except ImportError:
+        try:
+            from bim_assistant import BIMAssistant
+            logger.info("Assistant BIM avance charge")
+        except ImportError:
+            BIMAssistant = None
+            logger.warning("Assistant IA non disponible")
+
+try:
+    from report_generator import BIMReportGenerator
+except ImportError:
+    BIMReportGenerator = None
+    logger.warning("Generateur de rapports non disponible")
+
+try:
+    from pmr_analyzer import PMRAnalyzer
+    logger.info("Analyseur PMR charge")
+except ImportError:
+    PMRAnalyzer = None
+    logger.warning("Analyseur PMR non disponible")
+
+try:
+    from comprehensive_ifc_analyzer import ComprehensiveIFCAnalyzer
+    logger.info("Analyseur IFC complet charge")
+except ImportError:
+    ComprehensiveIFCAnalyzer = None
+    logger.warning("Analyseur IFC complet non disponible")
+
+app = FastAPI(title="XeoKit BIM Converter & AI Analysis API", version="2.0.0", description="API complete pour la conversion et l analyse intelligente de fichiers BIM")
+
+# --- AJOUT : Route /upload-rvt et fonction de conversion ---
+from fastapi import BackgroundTasks
+
+# Fonction pour lancer la conversion RVT -> IFC via pyRevit
+def convert_rvt_to_ifc_pyrevit(rvt_path, output_ifc_path):
+    import shutil
+    import time
+    WATCHED_FOLDER = r"C:\RVT_WATCH_FOLDER"
+    def convert_rvt_to_ifc_pyrevit(rvt_path, output_ifc_path):
+        # Deposer le fichier RVT dans le dossier surveille pour conversion locale
+        try:
+            if not os.path.exists(WATCHED_FOLDER):
+                os.makedirs(WATCHED_FOLDER)
+            dest_path = os.path.join(WATCHED_FOLDER, os.path.basename(rvt_path))
+            shutil.copy2(rvt_path, dest_path)
+            print(f"[CHECK] Fichier RVT depose dans le dossier surveille : {dest_path}")
+            # Attendre que le fichier IFC apparaisse (conversion faite par pyRevit/Revit)
+            for _ in range(60):  # Attente max 5 min
+                if os.path.exists(os.path.join(WATCHED_FOLDER, os.path.splitext(os.path.basename(rvt_path))[0] + ".ifc")):
+                    print(f"[CHECK] Conversion RVT->IFC detectee : {output_ifc_path}")
+                    # Copier l IFC dans le dossier du projet
+                    shutil.copy2(os.path.join(WATCHED_FOLDER, os.path.splitext(os.path.basename(rvt_path))[0] + ".ifc"), output_ifc_path)
+                    return True
+                time.sleep(5)
+            print(f"[CROSS] Conversion RVT->IFC non detectee apres 5 min : {output_ifc_path}")
+            return False
+        except Exception as e:
+            print(f"[CROSS] Exception depot RVT pour conversion : {e}")
+            return False
+
+# Route pour upload RVT et conversion automatique
+@app.post("/upload-rvt")
+async def upload_rvt(
+    file: UploadFile = File(...),
+    project_name: str = Form(...),
+    background_tasks: BackgroundTasks = None
+):
+    """Upload d un fichier RVT, delegation de la conversion a pyRevit (RVT->IFC), puis IFC->XKT et finalisation"""
+    if not file.filename.lower().endswith('.rvt'):
+        raise HTTPException(status_code=400, detail="Seuls les fichiers RVT sont acceptes")
+
+    conversion_id = str(uuid.uuid4())
+    project_id = "".join(c for c in project_name if c.isalnum() or c in (' ', '-', '_')).rstrip()
+    project_id = project_id.replace(' ', '_')
+
+    projects_data = load_projects_index()
+    existing_project = next((p for p in projects_data["projects"] if p["id"] == project_id), None)
+    if existing_project:
+        raise HTTPException(status_code=400, detail="Un projet avec ce nom existe deja")
+
+    try:
+        # Creer structure projet et sauvegarder RVT sous geometry.rvt
+        project_dir, model_dir = create_project_structure(project_id, project_name)
+        rvt_saved_path = os.path.join(model_dir, "geometry.rvt")
+        with open(rvt_saved_path, "wb") as buffer:
+            content = await file.read()
+            buffer.write(content)
+
+        # Lancer traitement asynchrone: depot dans WATCHED_FOLDER, attente IFC, copie, XKT, index
+        if background_tasks:
+            background_tasks.add_task(process_rvt_with_pyrevit, rvt_saved_path, model_dir, project_id, project_name, conversion_id)
+        else:
+            threading.Thread(target=process_rvt_with_pyrevit, args=(rvt_saved_path, model_dir, project_id, project_name, conversion_id), daemon=True).start()
+
+        return JSONResponse({
+            "message": "Upload RVT reussi, conversion RVT->IFC (pyRevit) puis IFC->XKT en cours",
+            "conversion_id": conversion_id,
+            "project_id": project_id
+        })
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+# --- FIN AJOUT ---
+
+# Configuration des templates
+templates = Jinja2Templates(directory=os.path.join(os.path.dirname(__file__), 'templates'))
+
+# ...rest of the code...
+static_path = Path(__file__).resolve().parent.parent / "static"
+print("[EMOJI] static_path ABSOLU =", static_path)
+
+if static_path.exists():
+    print("[CHECK] Dossier static existe")
+    for f in static_path.iterdir():
+        print(" -", f.name)
+    app.mount("/static", StaticFiles(directory=str(static_path)), name="static")
+else:
+    print("[CROSS] static_path n existe PAS")
+# Configuration CORS pour permettre les requetes depuis le frontend
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173",  # React frontend URL
+        "http://localhost:8081",  # xeokit-bim-viewer URL
+        "http://127.0.0.1:8081",  # Alternative localhost
+        "http://localhost:3000",  # Alternative React port
+        "http://127.0.0.1:3000",  # Alternative React port
+        "*"  # En production, specifiez les domaines autorises
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Stockage temporaire des rapports HTML
+html_reports = {}
+
+def generate_progress_bar(percentage, max_bars=10):
+    """Genere une barre de progression avec des caracteres []"""
+    filled_bars = int((percentage / 100) * max_bars)
+    empty_bars = max_bars - filled_bars
+    return "[]" * filled_bars + "[]" * empty_bars
+
+def generate_pmr_recommendations(pmr_data, total_storeys):
+    """Genere des recommandations PMR dynamiques"""
+    if not pmr_data:
+        return [
+            "Effectuer une analyse PMR complete",
+            "Verifier la conformite aux normes d accessibilite"
+        ]
+
+    recommendations = []
+    non_conformities = pmr_data.get('non_conformities', [])
+
+    if non_conformities:
+        recommendations.append(f"Corriger {len(non_conformities)} non-conformites PMR identifiees")
+
+        # Recommandations specifiques
+        for nc in non_conformities:
+            if 'ascenseur' in nc.get('description', '').lower():
+                recommendations.append("Installer un ascenseur pour l accessibilite verticale")
+            elif 'rampe' in nc.get('description', '').lower():
+                recommendations.append("Ajouter des rampes d acces PMR")
+            elif 'largeur' in nc.get('description', '').lower():
+                recommendations.append("[EMOJI]largir les passages pour respecter les normes PMR")
+    else:
+        recommendations.append("Maintenir la conformite PMR actuelle")
+        recommendations.append("Effectuer des controles periodiques")
+
+    return recommendations
+
+def generate_pmr_non_conformities(pmr_data, total_storeys, has_elevator=False):
+    """Genere les non-conformites PMR dynamiques"""
+    non_conformities = []
+
+    if pmr_data and pmr_data.get('non_conformities'):
+        # Utiliser les vraies non-conformites
+        real_non_conformities = pmr_data.get('non_conformities', [])
+        for i, nc in enumerate(real_non_conformities[:5], 1):  # Top 5
+            non_conformities.append({
+                "number": i,
+                "category": nc.get('category', 'Batiment'),
+                "description": nc.get('description', 'Non-conformite detectee'),
+                "recommendation": nc.get('recommendation', 'Corriger selon les normes PMR'),
+                "reference": nc.get('reference', 'Code de la Construction')
+            })
+    else:
+        # Generer des non-conformites basees sur l analyse du batiment
+        if total_storeys > 4 and not has_elevator:
+            non_conformities.append({
+                "number": 1,
+                "category": "Batiment",
+                "description": f"Verification presence ascenseur ({total_storeys} etages, 0 ascenseur(s))",
+                "recommendation": "Installer un ascenseur pour l accessibilite PMR",
+                "reference": "Article R111-19-4 du CCH"
+            })
+
+        if total_storeys > 1:
+            non_conformities.append({
+                "number": len(non_conformities) + 1,
+                "category": "Circulation",
+                "description": "Verification largeur des couloirs et passages",
+                "recommendation": "S assurer que les passages font au minimum 1,40m de large",
+                "reference": "Article R111-19-2 du CCH"
+            })
+
+    return non_conformities
+
+def generate_dynamic_references(building_type=None, has_pmr_analysis=False, has_environmental_analysis=False,
+                              has_cost_analysis=False, schema_ifc="IFC2X3"):
+    """Genere les references reglementaires dynamiques selon le projet"""
+    references = []
+
+    # References de base (toujours presentes)
+    references.extend([
+        {
+            "domaine": "Geometrie IFC",
+            "reference": f"ISO 16739 ({schema_ifc})",
+            "description": f"Standard international pour les donnees BIM - Version {schema_ifc}"
+        },
+        {
+            "domaine": "Qualite BIM",
+            "reference": "NF EN ISO 19650-1/2",
+            "description": "Organisation et numerisation des informations relatives aux batiments et ouvrages de genie civil"
+        }
+    ])
+
+    # References PMR (si analyse PMR presente)
+    if has_pmr_analysis:
+        references.append({
+            "domaine": "Accessibilite PMR",
+            "reference": "Code de la Construction - Articles R111-19 a R111-19-11",
+            "description": "Normes d accessibilite pour les personnes a mobilite reduite dans les ERP"
+        })
+
+    # References selon le type de batiment
+    if building_type:
+        if "residentiel" in building_type.lower() or "maison" in building_type.lower():
+            references.extend([
+                {
+                    "domaine": "Habitat Residentiel",
+                    "reference": "Code de la Construction - Articles R111-9 a R111-14",
+                    "description": "Regles de construction applicables aux batiments d habitation"
+                },
+                {
+                    "domaine": "Performance [EMOJI]nergetique",
+                    "reference": "RE 2020 (Residentiel)",
+                    "description": "Reglementation environnementale pour les logements neufs"
+                }
+            ])
+        elif "tertiaire" in building_type.lower() or "bureau" in building_type.lower():
+            references.extend([
+                {
+                    "domaine": "Batiments Tertiaires",
+                    "reference": "Code de la Construction - Articles R122-1 a R122-29",
+                    "description": "Regles applicables aux etablissements recevant du public (ERP)"
+                },
+                {
+                    "domaine": "Performance [EMOJI]nergetique",
+                    "reference": "RE 2020 (Tertiaire) / Decret Tertiaire",
+                    "description": "Reglementation environnementale et obligations de reduction energetique"
+                }
+            ])
+        elif "industriel" in building_type.lower():
+            references.append({
+                "domaine": "Batiments Industriels",
+                "reference": "Code du Travail - Articles R4214-1 a R4214-28",
+                "description": "Regles de securite et de sante dans les etablissements industriels"
+            })
+
+    # References environnementales (si analyse environnementale presente)
+    if has_environmental_analysis:
+        references.extend([
+            {
+                "domaine": "Analyse Environnementale",
+                "reference": "NF EN 15978",
+                "description": "[EMOJI]valuation de la performance environnementale des batiments - Methode de calcul"
+            },
+            {
+                "domaine": "Certifications Durables",
+                "reference": "HQE / LEED / BREEAM",
+                "description": "Referentiels de certification environnementale des batiments"
+            }
+        ])
+
+    # References couts (si analyse des couts presente)
+    if has_cost_analysis:
+        references.append({
+            "domaine": "Estimation des Couts",
+            "reference": "NF P03-001 / Methode UNTEC",
+            "description": "Methodes d estimation et de controle des couts de construction"
+        })
+
+    # Securite incendie (selon le type de batiment)
+    if building_type and ("tertiaire" in building_type.lower() or "bureau" in building_type.lower()):
+        references.append({
+            "domaine": "Securite Incendie ERP",
+            "reference": "Code de la Construction - Articles R123-1 a R123-55",
+            "description": "Regles de securite contre les risques d incendie dans les ERP"
+        })
+    else:
+        references.append({
+            "domaine": "Securite Incendie",
+            "reference": "Code de la Construction - Articles R121-1 a R121-13",
+            "description": "Regles generales de securite contre les risques d incendie"
+        })
+
+    return references
+def generate_dynamic_glossary(has_pmr_analysis=False, has_environmental_analysis=False,
+                            has_cost_analysis=False, has_optimization_analysis=False, building_type=None):
+    """[EMOJI] Genere le glossaire dynamique selon les analyses presentes"""
+    glossary = []
+
+    # Termes de base (toujours presents)
+    glossary.extend([
+        {
+            "terme": "[EMOJI]lement Structurel",
+            "definition": "Composant porteur du batiment (poutre, poteau, dalle, mur porteur)"
+        },
+        {
+            "terme": "Espace IFC",
+            "definition": "Zone fonctionnelle definie dans le modele BIM selon la norme ISO 16739"
+        },
+        {
+            "terme": "Classification IA BIMEX",
+            "definition": "Identification automatique du type de batiment par intelligence artificielle utilisant des algorithmes de deep learning"
+        },
+        {
+            "terme": "Anomalie BIM",
+            "definition": "Incoherence, erreur ou non-conformite detectee automatiquement dans le modele numerique"
+        },
+        {
+            "terme": "Score BIMEX",
+            "definition": "Indicateur de qualite global du modele BIM calcule par l IA (0-100%)"
+        }
+    ])
+
+    # Termes PMR (si analyse PMR presente)
+    if has_pmr_analysis:
+        glossary.extend([
+            {
+                "terme": "Conformite PMR",
+                "definition": "Respect des normes d accessibilite reglementaires pour les personnes a mobilite reduite (Articles R111 du CCH)"
+            },
+            {
+                "terme": "ERP",
+                "definition": "[EMOJI]tablissement Recevant du Public - Batiment soumis a des regles specifiques d accessibilite"
+            }
+        ])
+
+    # Termes environnementaux (si analyse environnementale presente)
+    if has_environmental_analysis:
+        glossary.extend([
+            {
+                "terme": "Empreinte Carbone",
+                "definition": "Quantite totale de gaz a effet de serre emise directement et indirectement par le batiment (en tonnes CO[EMOJI] equivalent)"
+            },
+            {
+                "terme": "Score de Durabilite",
+                "definition": "[EMOJI]valuation globale de la performance environnementale du batiment (echelle 1-10)"
+            },
+            {
+                "terme": "Classe [EMOJI]nergetique",
+                "definition": "Classification de la performance energetique du batiment (A+ a G) selon la reglementation RE 2020"
+            }
+        ])
+
+    # Termes de couts (si analyse des couts presente)
+    if has_cost_analysis:
+        glossary.extend([
+            {
+                "terme": "Prediction des Couts IA",
+                "definition": "Estimation automatique des couts de construction basee sur l analyse du modele IFC par machine learning"
+            },
+            {
+                "terme": "Cout par m[EMOJI]",
+                "definition": "Cout de construction rapporte a la surface utile du batiment ([EMOJI]/m[EMOJI])"
+            },
+            {
+                "terme": "Confiance IA",
+                "definition": "Niveau de fiabilite de la prediction calcule selon la richesse et la qualite des donnees du modele"
+            }
+        ])
+
+    # Termes d optimisation (si analyse d optimisation presente)
+    if has_optimization_analysis:
+        glossary.extend([
+            {
+                "terme": "Optimisation Multi-Objectifs",
+                "definition": "Processus d amelioration simultanee de plusieurs criteres (cout, performance, environnement) par algorithmes genetiques"
+            },
+            {
+                "terme": "Solutions Pareto",
+                "definition": "Ensemble de solutions optimales ou aucune amelioration n est possible sans degrader un autre critere"
+            },
+            {
+                "terme": "Algorithme NSGA-II",
+                "definition": "Non-dominated Sorting Genetic Algorithm - Methode d optimisation evolutionnaire multi-objectifs"
+            }
+        ])
+
+    # Termes specifiques au type de batiment
+    if building_type:
+        if "residentiel" in building_type.lower():
+            glossary.append({
+                "terme": "Logement Collectif",
+                "definition": "Batiment d habitation comportant plusieurs logements desservis par des parties communes"
+            })
+        elif "tertiaire" in building_type.lower():
+            glossary.append({
+                "terme": "Batiment Tertiaire",
+                "definition": "Construction destinee aux activites de bureau, commerce, enseignement ou services"
+            })
+        elif "industriel" in building_type.lower():
+            glossary.append({
+                "terme": "Batiment Industriel",
+                "definition": "Construction destinee a la production, au stockage ou a la transformation de biens"
+            })
+
+    return glossary
+
+def get_urgency_level(critical, high, medium):
+    """Determine le niveau d urgence base sur les anomalies"""
+    if critical > 0:
+        return "CRITIQUE (Immediat)"
+    elif high > 10:
+        return "URGENT (1 semaine)"
+    elif high > 5:
+        return "IMPORTANT (2 semaines)"
+    elif high > 0:
+        return "MOD[EMOJI]R[EMOJI] (1 mois)"
+    elif medium > 20:
+        return "NORMAL (2 mois)"
+    else:
+        return "FAIBLE (3 mois)"
+
+def generate_priority_anomalies(anomaly_summary, by_type):
+    """Genere la liste des anomalies prioritaires a corriger"""
+    priority_anomalies = []
+
+    # Prendre les anomalies de haute priorite
+    high_anomalies = anomaly_summary.get("by_severity", {}).get("high", 0)
+
+    if high_anomalies > 0:
+        # Chercher les types d anomalies les plus frequents
+        for anomaly_type, count in sorted(by_type.items(), key=lambda x: x[1], reverse=True):
+            if count > 0 and len(priority_anomalies) < 10:
+                priority_anomalies.append(anomaly_type)
+            if len(priority_anomalies) >= 10:
+                break
+    
+    return priority_anomalies
+
+def classify_building_basic_fallback(analysis_data):
+    """Classification basique du type de batiment avec fallback"""
+    
+    building_metrics = analysis_data.get('building_metrics', {})
+    total_storeys = building_metrics.get('storeys', {}).get('total_storeys', 0)
+    floor_area = building_metrics.get('surfaces', {}).get('total_floor_area', 0)
+    total_spaces = building_metrics.get('spaces', {}).get('total_spaces', 0)
+    
+    if total_storeys >= 10:
+        return "Immeuble de grande hauteur"
+    elif total_storeys >= 5:
+        return "Immeuble residentiel"
+    elif floor_area > 10000:
+        return "Batiment commercial"
+    elif total_spaces > 20:
+        return "Batiment de bureaux"
+    elif total_storeys > 0:
+        return "[HOUSE] Maison Individuelle"
+    else:
+        return "[HOUSE] Petite Construction"
+
+def classify_building_by_usage(space_usage_score, storeys, area, beam_count, column_count):
+    """Classification par usage avec scores"""
+    if space_usage_score['residential'] > space_usage_score['commercial']:
+        return "[HOUSE] Batiment Residentiel"
+    elif space_usage_score['commercial'] > space_usage_score['residential']:
+        if area > 2000:
+            return "[OFFICE] Centre Commercial"
+        else:
+            return "[OFFICE] Batiment Commercial"
+    elif space_usage_score['industrial'] > 0:
+        return "[FACTORY] Batiment Industriel"
+    elif storeys >= 5:
+        return "[OFFICE] Immeuble de Bureaux"
+    elif beam_count > column_count * 2:
+        return "[BUILDING] Structure Complexe"
+    else:
+        return "[BUILDING] Batiment Mixte"
+
+def calculate_confidence_score(element_types, space_types, materials, building_metrics):
+    """Calcule un score de confiance base sur la richesse des donnees"""
+    score = 0.5  # Base
+
+    # Bonus pour la diversite des elements
+    if len(element_types) > 5:
+        score += 0.2
+
+    # Bonus pour les espaces types
+    if len(space_types) > 0:
+        score += 0.15
+
+    # Bonus pour les materiaux
+    if len(materials) > 3:
+        score += 0.1
+
+    # Bonus pour les donnees geometriques completes
+    surfaces = building_metrics.get('surfaces', {})
+    if surfaces.get('total_floor_area', 0) > 0:
+        score += 0.05
+
+    return min(score, 0.98)  # Max 98%
+
+def analyze_geometric_patterns(element_types, building_metrics):
+    """Analyse les patterns geometriques du batiment"""
+    patterns = []
+
+    wall_count = element_types.get('IfcWall', 0)
+    beam_count = element_types.get('IfcBeam', 0)
+    column_count = element_types.get('IfcColumn', 0)
+
+    wall_count = element_types.get('IfcWall', 0)
+    beam_count = element_types.get('IfcBeam', 0)
+    column_count = element_types.get('IfcColumn', 0)
+
+    if wall_count > beam_count * 2:
+        patterns.append("wall_dominant_structure")
+    if beam_count > 10:
+        patterns.append("beam_frame_structure")
+    if column_count > 5:
+        patterns.append("column_grid_pattern")
+
+    storeys = building_metrics.get('storeys', {}).get('total_storeys', 0)
+    if storeys >= 5:
+        patterns.append("high_rise_pattern")
+
+    return patterns
+
+def extract_primary_indicators(element_types, space_types, building_metrics):
+    """Extrait les indicateurs primaires dynamiques avec descriptions detaillees"""
+
+    # Complexite spatiale avec details
+    total_spaces = building_metrics.get('spaces', {}).get('total_spaces', 0)
+    wall_count = element_types.get('IfcWall', 0)
+    beam_count = element_types.get('IfcBeam', 0)
+    column_count = element_types.get('IfcColumn', 0)
+    if total_spaces > 20 or column_count > 15:
+        structural_type = f"Complexe ({beam_count} poutres, {column_count} colonnes)"
+    elif beam_count > 5 or column_count > 3:
+        structural_type = f"Standard ({beam_count} poutres, {column_count} colonnes)"
+    else:
+        structural_type = f"Simple ({wall_count} murs, {beam_count} poutres)"
+
+    # Pattern d usage avec analyse des espaces
+    residential_spaces = sum(1 for space in space_types.keys()
+                           if any(keyword in str(space).lower()
+                                 for keyword in ['bedroom', 'living', 'kitchen', 'bathroom', 'chambre', 'salon', 'cuisine']))
+    commercial_spaces = sum(1 for space in space_types.keys()
+                          if any(keyword in str(space).lower()
+                                for keyword in ['office', 'shop', 'store', 'bureau', 'magasin']))
+
+    if residential_spaces > commercial_spaces:
+        usage_pattern = f"Residentiel ({residential_spaces} espaces residentiels)"
+    elif commercial_spaces > 0:
+        usage_pattern = f"Commercial ({commercial_spaces} espaces commerciaux)"
+    elif len(space_types) > 0:
+        usage_pattern = f"Mixte ({len(space_types)} types d espaces)"
+    else:
+        usage_pattern = "Non defini (aucun espace type)"
+
+    spatial_complexity = 'Eleve' if total_spaces > 20 or column_count > 10 else ('Modere' if total_spaces > 5 else 'Faible')
+    return {
+        'spatial_complexity': spatial_complexity,
+        'structural_type': structural_type,
+        'usage_pattern': usage_pattern
+    }
+
+def calculate_complexity_score(element_types, total_spaces, total_storeys):
+    """Calcule un score de complexite base sur les elements reels"""
+    base_score = 20
+
+    # Complexite des elements
+    element_complexity = sum(element_types.values()) * 0.1
+
+    # Complexite spatiale
+    space_complexity = total_spaces * 2
+
+    # Complexite verticale
+    storey_complexity = total_storeys * 5
+
+    total_complexity = base_score + element_complexity + space_complexity + storey_complexity
+    return min(total_complexity, 100)
+
+def classify_building_basic_fallback(analysis_data):
+    """Classification basique de fallback"""
+    try:
+        building_metrics = analysis_data.get('building_metrics', {})
+        storeys = building_metrics.get('storeys', {})
+        total_storeys = storeys.get('total_storeys', 0)
+
+        spaces = building_metrics.get('spaces', {})
+        total_spaces = spaces.get('total_spaces', 0)
+        surfaces = building_metrics.get('surfaces', {})
+        floor_area = surfaces.get('total_floor_area', 0)
+
+        # Classification basique selon les criteres
+        if total_storeys >= 10:
+            building_type = "[OFFICE] Immeuble de Grande Hauteur"
+        elif total_storeys >= 5:
+            building_type = "[OFFICE] Immeuble Residentiel"
+        elif floor_area > 1000:
+            building_type = "[OFFICE] Batiment Commercial"
+        else:
+            building_type = "[BUILDING] Batiment Mixte"
+
+        return {
+            'building_type': building_type,
+            'confidence': 0.75,
+            'element_analysis': {},
+            'material_analysis': [],
+            'space_analysis': {},
+            'geometric_patterns': ['standard_pattern'],
+            'primary_indicators': {
+                'spatial_complexity': 'Modere',
+                'structural_type': 'Standard',
+                'usage_pattern': 'Mixte'
+            },
+            'complexity_score': 50,
+            'training_details': {
+                'building_types': 5,
+                'total_patterns': 35,
+                'keywords': 25,
+                'neural_patterns': 1,
+                'accuracy': '91.5%',
+                'status': 'Entraine et Optimise',
+                'method': 'Analyse Basique'
+            }
+        }
+
+    except Exception as e:
+        logger.warning(f"Erreur classification basique: {e}")
+        return {
+            'building_type': "[BUILDING] Batiment Non Classifie",
+            'confidence': 0.5,
+            'element_analysis': {},
+            'material_analysis': [],
+            'space_analysis': {},
+            'geometric_patterns': [],
+            'primary_indicators': {},
+            'complexity_score': 30,
+            'training_details': {
+                'building_types': 3,
+                'total_patterns': 20,
+                'keywords': 15,
+                'neural_patterns': 1,
+                'accuracy': '85.0%',
+                'status': 'Entrainement Limite',
+                'method': 'Fallback'
+            }
+        }
+
+def generate_dynamic_training_details(element_types, space_types, patterns):
+    """Genere des details d entrainement dynamiques bases sur l analyse"""
+
+    # Calculer dynamiquement selon les donnees reelles
+    total_elements = sum(element_types.values())
+    unique_spaces = len(space_types)
+    pattern_count = len(patterns)
+
+    # Types de batiments detectes (base sur la complexite)
+    building_types = 3 + min(unique_spaces // 2, 5)  # 3-8 types
+
+    # Patterns geometriques (base sur les elements)
+    geometric_patterns = 20 + min(total_elements // 5, 50)  # 20-70 patterns
+
+    # Mots-cles (base sur les types d espaces)
+    keywords = 15 + unique_spaces * 2  # 15+ mots-cles
+
+    # Patterns neuronaux (base sur la complexite)
+    neural_patterns = max(1, pattern_count)
+
+    # Precision basee sur la richesse des donnees
+    if total_elements > 50 and unique_spaces > 5:
+        accuracy = "96.8%"
+    elif total_elements > 20 and unique_spaces > 2:
+        accuracy = "94.2%"
+    else:
+        accuracy = "91.5%"
+
+    return {
+        'building_types': building_types,
+        'total_patterns': geometric_patterns,
+        'keywords': keywords,
+        'neural_patterns': neural_patterns,
+        'accuracy': accuracy,
+        'status': 'Entraine et Optimise',
+        'method': 'Deep Learning + Analyse Geometrique'
+    }
+
+def generate_dynamic_classification_description(dynamic_analysis):
+    """Genere une description dynamique complete de la classification"""
+
+    element_count = sum(dynamic_analysis.get('element_analysis', {}).values())
+    space_count = len(dynamic_analysis.get('space_analysis', {}))
+    material_count = len(dynamic_analysis.get('material_analysis', []))
+    confidence = dynamic_analysis.get('confidence', 0.5)
+
+    # Base de la description
+    description = f"[ROBOT] BIMEX IA Advanced - Analyse de {element_count} elements"
+
+    # Ajouter les espaces si presents
+    if space_count > 0:
+        description += f", {space_count} espaces"
+
+    # Ajouter les materiaux si presents
+    if material_count > 0:
+        description += f", {material_count} materiaux"
+
+    # Determiner le type d analyse selon la complexite
+    if element_count > 500 and space_count > 10:
+        analysis_type = "Analyse complexe multi-niveaux"
+    elif element_count > 100 and space_count > 5:
+        analysis_type = "Analyse multi-criteres avancee"
+    elif element_count > 50:
+        analysis_type = "Analyse multi-criteres"
+    else:
+        analysis_type = "Analyse structurelle"
+
+    # Determiner le niveau de confiance
+    if confidence >= 0.9:
+        confidence_level = "Confiance tres elevee"
+    elif confidence >= 0.8:
+        confidence_level = "Confiance elevee"
+    elif confidence >= 0.7:
+        confidence_level = "Confiance moderee"
+    else:
+        confidence_level = "Confiance limitee"
+
+    # Ajouter des details selon les patterns detectes
+    patterns = dynamic_analysis.get('geometric_patterns', [])
+    if 'beam_frame_structure' in patterns:
+        analysis_type += " + Structure a poutres"
+    elif 'column_grid_pattern' in patterns:
+        analysis_type += " + Grille de colonnes"
+    elif 'wall_dominant_structure' in patterns:
+        analysis_type += " + Structure murale"
+
+    return f"{description} * {analysis_type} * {confidence_level}"
+
+def analyze_building_dynamically(ifc_file_path, analysis_data):
+    """Analyse dynamique complète du bâtiment basée sur le fichier IFC réel"""
+    try:
+        import ifcopenshell
+
+        # Charger le fichier IFC
+        ifc_file = ifcopenshell.open(ifc_file_path)
+
+        # 1. ANALYSE DES TYPES D'ÉLÉMENTS
+        element_types = {}
+        for entity_type in ['IfcWall', 'IfcBeam', 'IfcColumn', 'IfcSlab', 'IfcDoor', 'IfcWindow', 'IfcSpace']:
+            elements = ifc_file.by_type(entity_type)
+            element_types[entity_type] = len(elements)
+
+        # 2. ANALYSE DES MATÉRIAUX
+        materials = ifc_file.by_type('IfcMaterial')
+        material_names = [mat.Name for mat in materials if hasattr(mat, 'Name') and mat.Name]
+
+        # 3. ANALYSE DES ESPACES ET USAGE
+        spaces = ifc_file.by_type('IfcSpace')
+        space_types = {}
+        for space in spaces:
+            if hasattr(space, 'ObjectType') and space.ObjectType:
+                space_type = space.ObjectType
+                space_types[space_type] = space_types.get(space_type, 0) + 1
+
+        # 4. ANALYSE GÉOMÉTRIQUE
+        building_metrics = analysis_data.get('building_metrics', {})
+        total_storeys = building_metrics.get('storeys', {}).get('total_storeys', 0)
+        total_spaces = building_metrics.get('spaces', {}).get('total_spaces', 0)
+        floor_area = building_metrics.get('surfaces', {}).get('total_floor_area', 0)
+
+        # 5. CLASSIFICATION INTELLIGENTE
+        building_type = classify_building_intelligent(element_types, space_types, material_names,
+                                                    total_storeys, total_spaces, floor_area)
+
+        # 6. CALCUL DE CONFIANCE BASÉ SUR LES DONNÉES RÉELLES
+        confidence = calculate_confidence_score(element_types, space_types, material_names, building_metrics)
+
+        # 7. ANALYSE DES PATTERNS
+        patterns = analyze_geometric_patterns(element_types, building_metrics)
+
+        # 8. INDICATEURS PRIMAIRES DYNAMIQUES
+        primary_indicators = extract_primary_indicators(element_types, space_types, building_metrics)
+
+        return {
+            'building_type': building_type,
+            'confidence': confidence,
+            'element_analysis': element_types,
+            'material_analysis': material_names,
+            'space_analysis': space_types,
+            'geometric_patterns': patterns,
+            'primary_indicators': primary_indicators,
+            'complexity_score': calculate_complexity_score(element_types, total_spaces, total_storeys),
+            'training_details': generate_dynamic_training_details(element_types, space_types, patterns)
+        }
+
+    except Exception as e:
+        logger.warning(f"Erreur analyse dynamique: {e}")
+        return classify_building_basic_fallback(analysis_data)
+
+def classify_building_intelligent(element_types, space_types, materials, storeys, spaces, area):
+    """Classification intelligente basée sur l'analyse réelle du modèle"""
+
+    # Analyse des espaces pour déterminer l'usage
+    residential_keywords = ['bedroom', 'living', 'kitchen', 'bathroom', 'chambre', 'salon', 'cuisine', 'salle']
+    commercial_keywords = ['office', 'shop', 'store', 'bureau', 'magasin', 'commerce']
+    industrial_keywords = ['warehouse', 'factory', 'production', 'entrepot', 'usine']
+
+    space_usage_score = {'residential': 0, 'commercial': 0, 'industrial': 0}
+
+    for space_type in space_types.keys():
+        space_lower = space_type.lower()
+        if any(keyword in space_lower for keyword in residential_keywords):
+            space_usage_score['residential'] += space_types[space_type]
+        elif any(keyword in space_lower for keyword in commercial_keywords):
+            space_usage_score['commercial'] += space_types[space_type]
+        elif any(keyword in space_lower for keyword in industrial_keywords):
+            space_usage_score['industrial'] += space_types[space_type]
+
+    # Analyse structurelle
+    wall_count = element_types.get('IfcWall', 0)
+    beam_count = element_types.get('IfcBeam', 0)
+    column_count = element_types.get('IfcColumn', 0)
+
+    # Logique de classification
+    if storeys <= 2 and spaces <= 15 and area < 500:
+        if space_usage_score['residential'] > 0:
+            return "🏠 Maison Individuelle"
+        else:
+            return "🏠 Petite Construction"
+    elif storeys <= 4 and space_usage_score['residential'] > space_usage_score['commercial']:
+        return "🏠 Bâtiment Résidentiel"
+    elif space_usage_score['commercial'] > space_usage_score['residential']:
+        if area > 2000:
+            return "🏢 Centre Commercial"
+        else:
+            return "🏢 Bâtiment Commercial"
+    elif space_usage_score['industrial'] > 0:
+        return "🏭 Bâtiment Industriel"
+    elif storeys >= 5:
+        return "🏢 Immeuble de Bureaux"
+    elif beam_count > column_count * 2:
+        return "🏗️ Structure Complexe"
+    else:
+        return "🏗️ Bâtiment Mixte"
+
+def generate_dynamic_recommendations(critical_anomalies, high_anomalies, medium_anomalies, low_anomalies,
+                                   pmr_compliance_rate, window_wall_ratio, total_anomalies, floor_area):
+    """[ROCKET] CORRECTION: Genere des recommandations dynamiques basees sur les vraies donnees"""
+    recommendations = []
+
+    # 1. Recommandations basees sur les anomalies CRITIQUES
+    if critical_anomalies > 0:
+        recommendations.append(f"[EMOJI] Priorite 1 - URGENT: Traiter les {critical_anomalies} anomalie(s) de severite CRITIQUE immediatement.")
+
+    # 2. Recommandations basees sur les anomalies [EMOJI]LEV[EMOJI]ES
+    if high_anomalies > 0:
+        recommendations.append(f"[EMOJI] Priorite 2: Traiter les {high_anomalies} anomalie(s) de severite elevee.")
+    elif critical_anomalies == 0 and high_anomalies == 0:
+        recommendations.append("[CHECK] Anomalies prioritaires: Aucune anomalie critique ou elevee detectee.")
+
+    # 3. Recommandations basees sur les anomalies MOYENNES
+    if medium_anomalies > 10:
+        recommendations.append(f"[EMOJI] Qualite du modele: {medium_anomalies} anomalies moyennes detectees. Revision recommandee.")
+    elif medium_anomalies > 0:
+        recommendations.append(f"[TOOL] Amelioration continue: Corriger les {medium_anomalies} anomalie(s) moyennes pour optimiser la qualite.")
+
+    # 4. Recommandations PMR basees sur la conformite reelle
+    if pmr_compliance_rate < 50:
+        recommendations.append(f"[WARNING] PMR CRITIQUE: Conformite tres faible ({pmr_compliance_rate:.1f}%). Revision complete necessaire.")
+    elif pmr_compliance_rate < 80:
+        recommendations.append(f"[TOOL] Accessibilite PMR: Taux de conformite actuel {pmr_compliance_rate:.1f}%. Plan d'action requis.")
+    else:
+        recommendations.append("[CHECK] PMR Conforme: Accessibilite respectant les normes reglementaires.")
+
+    # 5. Recommandations basees sur le ratio fenetres/murs
+    if window_wall_ratio < 0.15:
+        recommendations.append(f"[SUN] Eclairage naturel: Ratio fenetres/murs faible ({window_wall_ratio:.1%}). Considerer l ajout d ouvertures.")
+    elif window_wall_ratio > 0.30:
+        recommendations.append(f"[HOUSE] Isolation thermique: Ratio fenetres/murs eleve ({window_wall_ratio:.1%}). Verifier l isolation.")
+    else:
+        recommendations.append(f"[TARGET] Equilibre optimal: Ratio fenetres/murs equilibre ({window_wall_ratio:.1%}).")
+
+    # 6. Recommandations basees sur la taille du batiment
+    if floor_area > 2000:
+        recommendations.append("[OFFICE] Grand batiment: Verifier la ventilation et les systemes MEP pour les grands espaces.")
+    elif floor_area < 500:
+        recommendations.append("[HOME] Petit batiment: Optimiser l utilisation de l espace disponible.")
+
+    # 7. Recommandations generales basees sur la qualite globale
+    if total_anomalies == 0:
+        recommendations.append("[STAR] Modele exemplaire: Aucune anomalie detectee. Maintenir cette qualite.")
+    elif total_anomalies < 10:
+        recommendations.append("[THUMBS_UP] Bonne qualite: Modele de bonne qualite avec quelques points d amelioration.")
+    else:
+        recommendations.append("[SEARCH] Controle qualite: Mettre en place un processus de verification plus rigoureux.")
+
+    # 8. Recommandations de processus (toujours pertinentes)
+    recommendations.append("[CLIPBOARD] Documentation: Maintenir une documentation complete des modifications.")
+    recommendations.append("[SEARCH] Verifications regulieres: Effectuer des controles qualite pendant le developpement.")
+    recommendations.append("[EMOJI] Coordination: Assurer la coordination entre les disciplines (architecture, structure, MEP).")
+
+    return recommendations
 def prepare_html_report_data(analysis_data, anomaly_summary, pmr_data, filename, classification_result=None,
                            cost_data=None, optimization_data=None, environmental_data=None):
     """Prepare les donnees pour le template HTML avec donnees R[EMOJI]ELLES du fichier IFC + analyses IA"""
@@ -1809,7 +2993,6 @@ async def bim_analysis(project: str = None, auto: bool = False, file_detected: b
         return FileResponse(frontend_path)
     else:
         return {"error": "Page d analyse non trouvee"}
-
 @app.get("/frontend/bim_analysis.html", response_class=HTMLResponse)
 async def frontend_bim_analysis(project: str = None, auto: bool = False, file_detected: bool = False, step: str = None):
     """[CHART] Page d analyse BIM - Route pour /frontend/bim_analysis.html"""
@@ -2414,7 +3597,6 @@ def add_project_to_index(project_id: str, project_name: str):
         logger.info(f"[CHECK] Projet {project_id} ajoute a l index")
     except Exception as e:
         logger.error(f"[CROSS] Erreur ajout projet a l index: {e}")
-
 def convert_rvt_and_finalize(rvt_path: str, model_dir: str, conversion_id: str, project_id: str, project_name: str):
     """Fonction pour gerer la conversion RVT->IFC->XKT et finaliser le projet"""
     try:
@@ -3056,7 +4238,6 @@ def _get_element_location(element) -> tuple:
         return (x, y, z)
     except Exception:
         return (0.0, 0.0, 0.0)
-
 def _generate_geojson_from_ifc(project_id: str, persist: bool = False) -> bytes:
     """Génère un GeoJSON FeatureCollection minimal à partir du fichier IFC du projet.
 
@@ -3695,7 +4876,6 @@ async def analyze_environment(file: UploadFile = File(...)):
             os.unlink(temp_ifc_path)
         logger.error(f"Erreur lors de l analyse environnementale: {e}")
         raise HTTPException(status_code=500, detail=f"Erreur d analyse: {str(e)}")
-
 @app.post("/optimize-design")
 async def optimize_design(file: UploadFile = File(...)):
     """Optimisation automatique du design avec IA"""
@@ -4297,7 +5477,6 @@ async def analyze_environment_project(project_name: str):
     except Exception as e:
         logger.error(f"Erreur lors de l analyse environnementale pour {project_name}: {e}")
         raise HTTPException(status_code=500, detail=f"Erreur d analyse: {str(e)}")
-
 def generate_comprehensive_optimization_data(ifc_file_path: str, project_name: str) -> Dict[str, Any]:
     """Generer des donnees d optimisation completes et dynamiques basees sur le fichier IFC"""
     try:
@@ -4789,7 +5968,6 @@ async def generate_pdf_with_weasyprint_charts(report_id: str):
         import traceback
         traceback.print_exc()
         raise e
-
 async def create_chart_images(report_data):
     """[ART] Cree les graphiques Matplotlib en images base64"""
     import matplotlib.pyplot as plt
@@ -5439,7 +6617,6 @@ async def analyze_pmr_project(project_id: str):
     except Exception as e:
         logger.error(f"Erreur lors de l analyse PMR du projet {project_id}: {e}")
         raise HTTPException(status_code=500, detail=f"Erreur d analyse PMR: {str(e)}")
-
 @app.post("/generate-report")
 async def generate_report(file: UploadFile = File(...), report_type: str = Form("full")):
     """Genere un rapport d analyse BIM"""
@@ -5996,7 +7173,6 @@ def generate_environmental_recommendations(total_elements: int, walls_count: int
         })
 
     return recommendations
-
 def generate_comprehensive_environmental_data(ifc_file_path: str, project_name: str) -> Dict[str, Any]:
     """Genere des donnees environnementales dynamiques basees sur l analyse reelle du modele IFC"""
     try:
@@ -7110,7 +8286,6 @@ def replace_canvas_with_images(html_content, chart_images):
         html_content = re.sub(fallback_pattern, '', html_content, flags=re.IGNORECASE)
 
     return html_content
-
 def generate_html_with_chart_images(report_data, chart_images):
     """[EMOJI] Genere le HTML avec graphiques Matplotlib integres"""
 
@@ -7760,7 +8935,6 @@ const puppeteer = require('puppeteer');
             os.unlink(script_path)
         except:
             pass
-
 def generate_pdf_with_playwright_subprocess(report_id: str):
     """Genere un PDF avec Playwright via subprocess (evite les conflits event loop)"""
     import subprocess
@@ -8407,7 +9581,6 @@ async def get_available_features():
             }
         }
     })
-
 # ==================== BUSINESS INTELLIGENCE ENDPOINTS ====================
 
 @app.get("/bi/status")
@@ -9053,7 +10226,6 @@ def calculate_innovation_score(quality_score: float, spatial_score: float) -> fl
     except Exception as e:
         logger.error(f"Erreur calcul score innovation: {e}")
         return 84.0  # Valeur par défaut cohérente
-
 def calculate_ai_efficiency(quality_score: float, structural_score: float) -> float:
     """Calcule un score d'efficacité IA cohérent basé sur les scores existants"""
     try:
@@ -9701,7 +10873,6 @@ async def debug_paths():
             "/static (xeokit root)"
         ]
     })
-
 # Fonctions utilitaires pour les calculs analytics
 def calculate_space_efficiency(building_metrics):
     """Calculer l efficacite spatiale"""
@@ -9920,6 +11091,23 @@ if OCR_AVAILABLE:
         return get_ocr_info()
 else:
     print("✗ OCR Modules not available - skipping integration")
+
+# Include PixOCR App if available
+if PIX_AVAILABLE:
+    pix_app = get_pix_app()
+    if pix_app:
+        # Monter l'app PixOCR complète sous /pixocr
+        app.mount("/pixocr", pix_app, name="pixocr")
+        print("✓ PixOCR App mounted successfully under /pixocr")
+        
+        # Ajouter une route pour les informations PixOCR
+        @app.get("/pix/info")
+        def get_pix_status():
+            return get_pix_info()
+    else:
+        print("✗ PixOCR App not loaded - skipping integration")
+else:
+    print("✗ PixOCR Modules not available - skipping integration")
 
 if __name__ == "__main__":
     import uvicorn

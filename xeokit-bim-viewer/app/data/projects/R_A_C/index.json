@@ -1,0 +1,22 @@
+{
+    "id": "R_A_C",
+    "name": "R A C",
+    "models": [
+        {
+            "id": "model",
+            "name": "R A C Model"
+        }
+    ],
+    "viewerConfigs": {},
+    "viewerContent": {
+        "modelsLoaded": [
+            "model"
+        ]
+    },
+    "viewerState": {
+        "tabOpen": "classes",
+        "expandObjectsTree": 1,
+        "expandClassesTree": 1,
+        "expandStoreysTree": 1
+    }
+}

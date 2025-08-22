@@ -1,0 +1,91 @@
+model:
+  # Adjust if your model path is different
+  yolo_weights: "pixocr_modules/model/best.pt"
+
+pdf:
+  dpi: 300
+
+ocr:
+  language: "deu+eng"
+  oem: 3
+  psm: 6
+  confidence_threshold: 30
+  tessdata_prefix: ""
+  char_blacklist: ""
+  preserve_interword_spaces: 1
+
+table:
+  row_tolerance: 15
+  dynamic_row_tolerance: true
+  header_col_merge_tolerance: 120
+  col_tolerance: 10
+  column_binning_from_header: true
+  table_band_pad: 6
+
+headers:
+  merge_two_rows: true
+  force_translate: false
+
+  canonical_map:
+    - ["^(pos(\\.|ition)?|pos\\.-?nr\\.?|nr\\.?|no\\.?|nr\\.?/pos\\.?|#)$", "Position"]
+    - ["^(st(i+|l)?(ü|u)ck|stk\\.?|st\\.?|anz(\\.|ahl)?|menge)$", "Stück"]
+    - ["^(.*(durchmesser|ø|@|o/|0/).*(\\[?mm\\]?).*)$", "Ø [mm]"]
+    - ["^(biegeform|bema(ß|ss)te\\s*biegeform|biege\\s*form|form)$", "Biegeform"]
+    - ["^(einzel[- ]?l(ä|a)nge(\\s*\\[?m\\]?)?|schnittl(ä|a)nge)$", "Einzellänge [m]"]
+    - ["^(gesamt[- ]?l(ä|a)nge(\\s*\\[?m\\]?)?|ges\\.?l(\\.|\\s|ange)?)$", "Gesamtlänge [m]"]
+    - ["^(gewicht(\\s*\\[?kg\\]?)?|gew(\\.|icht)?|masse|weight)$", "Gewicht [kg]"]
+
+  final_display_order:
+    - Position
+    - Stück
+    - Ø [mm]
+    - Biegeform
+    - Einzellänge [m]
+    - Gesamtlänge [m]
+    - Gewicht [kg]
+
+  display_to_canonical:
+    Position: position
+    Stück: quantity
+    Ø [mm]: diameter_mm
+    Biegeform: bend_shape
+    Einzellänge [m]: unit_length_m
+    Gesamtlänge [m]: total_length_m
+    Gewicht [kg]: weight_kg
+
+  key_map:
+    Projekt: PROJECT
+    Projekt-Nr.: PROJECT
+    Objekt: PROJECT
+    Bearbeiter: PERSON
+    Gezeichnet: PERSON
+    Datum: DATE
+    "Datum / Zeit": DATE
+    Plan-Nr.: DRAWING_NO
+    zu Plan: DRAWING_NO     # extra mapping to catch variants
+
+normalization:
+  symbol_map:
+    "@":  "Ø"
+    "O/": "Ø"
+    "0/": "Ø"
+    "o/": "Ø"
+    "Ø/": "Ø"
+  replacements:
+    - ["Stiick", "Stück"]
+    - ["Stuck", "Stück"]
+    - ["Bemasste", "Bemaßte"]
+    - ["Bemafte", "Bemaßte"]
+    - ["Biege form", "Biegeform"]
+    - ["Gesamtlange", "Gesamtlänge"]
+    - ["Einzellange", "Einzellänge"]
+
+header_crop_ratio: 0.18
+
+validation:
+  allowed_diameters_mm: [6, 8, 10, 12, 14, 16, 20, 25, 28, 32, 40]
+  length_tolerance_pct: 3.0
+  length_tolerance_abs_m: 0.10
+  weight_tolerance_pct: 5.0
+  weight_tolerance_abs_kg: 0.20
+  required_header_fields: ["PROJECT", "DRAWING_NO", "DATE"]

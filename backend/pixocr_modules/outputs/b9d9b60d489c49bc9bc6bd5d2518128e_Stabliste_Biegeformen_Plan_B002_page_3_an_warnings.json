@@ -1,0 +1,14 @@
+[
+  {
+    "table": 0,
+    "row": 1,
+    "field": null,
+    "message": "'length_m' is a required property"
+  },
+  {
+    "table": 0,
+    "row": 1,
+    "field": null,
+    "message": "Additional properties are not allowed ('unit_length_m' was unexpected)"
+  }
+]

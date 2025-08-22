@@ -1,5 +1,7 @@
 // src/App.tsx (AppContent without BIMPreview)
 import React, { useEffect } from 'react';
+import PixocrPage from './pixocr/app/page';
+import './pixocr/app/globals.css';
 import { AppProvider, useApp } from './context/AppContext';
 import { Header } from './components/Layout/Header';
 import { FileUpload } from './components/FileUpload/FileUpload';
@@ -16,6 +18,12 @@ useEffect(() => {
   }
 }, [state.uploadedFiles, state.currentFile, dispatch]);
 
+
+  const isPixocrRoute = typeof window !== 'undefined' && window.location.pathname.toLowerCase().startsWith('/pixocr');
+
+  if (isPixocrRoute) {
+    return <PixocrPage />;
+  }
 
   return (
     <div className={`min-h-screen transition-colors duration-200 ${
