@@ -42,7 +42,7 @@ export default function Home() {
             </p>
           </header>
 
-          <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+          <div >
             <div className="xl:col-span-2 space-y-8">
               <ToggleControls
                 translateHeaders={translateHeaders}

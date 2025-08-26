@@ -15,12 +15,23 @@ import {
 } from 'lucide-react';
 import { ProcessingResultsProps } from '@/types/document';
 
-const API_BASE = process.env.NEXT_PUBLIC_API || '';
+// Use backend base URL; default to FastAPI dev port and strip trailing slash
+const API_BASE = (process.env.NEXT_PUBLIC_API || 'http://127.0.0.1:8001').replace(/\/$/, '');
+// If PixOCR app is mounted under a prefix (e.g. '/pixocr'), configure it; default '/pixocr'
+const API_PREFIX = (process.env.NEXT_PUBLIC_API_PREFIX || '/pixocr').replace(/\/$/, '');
+
+const buildUrl = (path: string) => {
+  if (!path) return '';
+  if (path.startsWith('/outputs') || path.startsWith('/uploads')) {
+    return `${API_BASE}${API_PREFIX}${path}`;
+  }
+  return `${API_BASE}${path}`;
+};
 
 export default function ProcessingResults({ files }: ProcessingResultsProps) {
   const [selectedFile, setSelectedFile] = useState<string | null>(null);
   const [tablesData, setTablesData] = useState<string[][][]>([]);
-  const [headerJson, setHeaderJson] = useState<any>(null);
+  const [headerJson, setHeaderJson] = useState<Record<string, unknown> | null>(null);
 
   const completedFiles = files.filter(f => f.status === 'completed');
   const activeFile = selectedFile
@@ -37,7 +48,7 @@ export default function ProcessingResults({ files }: ProcessingResultsProps) {
       const tables: string[][][] = await Promise.all(
         csvPaths.map(async (csvPath: string) => {
           try {
-            const res = await fetch(`${API_BASE}${csvPath}`);
+            const res = await fetch(buildUrl(csvPath));
             const text = await res.text();
             // very simple CSV split; good enough for our data (no quoted commas)
             const rows = text.trim().split('\n').map(r => r.split(','));
@@ -60,10 +71,10 @@ export default function ProcessingResults({ files }: ProcessingResultsProps) {
       const p = activeFile?.results?.header_json;
       if (!p) return;
       try {
-        const res = await fetch(`${API_BASE}${p}`);
+        const res = await fetch(buildUrl(p));
         const data = await res.json();
         setHeaderJson(data);
-      } catch (e) {
+      } catch {
         console.warn('Failed to load header JSON:', p);
       }
     };
@@ -71,7 +82,7 @@ export default function ProcessingResults({ files }: ProcessingResultsProps) {
   }, [activeFile]);
 
   const downloadFileFromURL = async (url: string, filename: string) => {
-    const response = await fetch(`${API_BASE}${url}`);
+    const response = await fetch(buildUrl(url));
     const blob = await response.blob();
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
@@ -137,6 +148,11 @@ export default function ProcessingResults({ files }: ProcessingResultsProps) {
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-lg font-semibold">Results: {activeFile.name}</h3>
               <div className="flex gap-2 flex-wrap">
+                {(() => {
+                  const reportPdfUrl = results.report_pdf ? buildUrl(results.report_pdf) : undefined;
+                  const llmTxtUrl = results.llm_review_txt ? buildUrl(results.llm_review_txt) : undefined;
+                  return (
+                    <>
                 {csv0 && (
                   <Button
                     variant="outline"
@@ -159,38 +175,42 @@ export default function ProcessingResults({ files }: ProcessingResultsProps) {
                     JSON
                   </Button>
                 )}
-                {results.report_pdf && (
+                {reportPdfUrl && (
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => window.open(`${API_BASE}${results.report_pdf}`, '_blank')}
+                    onClick={() => window.open(reportPdfUrl, '_blank')}
                   >
                     📄 Download PDF
                   </Button>
                 )}
-                {results.llm_review_txt && (
+                {llmTxtUrl && (
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => window.open(`${API_BASE}${results.llm_review_txt}`, '_blank')}
+                    onClick={() => window.open(llmTxtUrl, '_blank')}
                   >
                     🤖 LLM Review
                   </Button>
                 )}
+                    </>
+                  );
+                })()}
               </div>
             </div>
 
             {results.report_pdf && (
-              <div className="mt-4">
-                <h4 className="text-sm font-medium text-gray-700 mb-2">📄 PDF Preview</h4>
-                <iframe
-                  src={`${API_BASE}${results.report_pdf}`}
-                  width="100%"
-                  height="600px"
-                  className="border rounded-lg"
-                  title="PDF Preview"
-                />
-              </div>
+              <Card className="p-4 mb-4">
+                <h4 className="font-medium mb-2">PDF Preview</h4>
+                <div className="border rounded overflow-hidden" style={{ height: '600px' }}>
+                  <iframe
+                    src={buildUrl(results.report_pdf) + '#toolbar=1'}
+                    title="PDF Preview"
+                    width="100%"
+                    height="100%"
+                  />
+                </div>
+              </Card>
             )}
 
             <Tabs defaultValue="table" className="space-y-4 mt-4">
@@ -282,7 +302,7 @@ export default function ProcessingResults({ files }: ProcessingResultsProps) {
                     <div className="border rounded-lg p-4 bg-gray-50">
                       {results.original_image ? (
                         <img
-                          src={`${API_BASE}${results.original_image}`}
+                          src={buildUrl(results.original_image)}
                           alt="Uploaded document"
                           className="w-full h-48 object-contain rounded"
                         />
@@ -295,19 +315,23 @@ export default function ProcessingResults({ files }: ProcessingResultsProps) {
                     <h4 className="font-medium mb-2">Detected Tables</h4>
                     <div className="grid grid-cols-1 gap-4">
                       {results.tables?.length ? (
-                        results.tables.map((t: any) => (
+                        results.tables.map((t: { index: number; image?: string | null }) => (
                           <div key={t.index} className="border rounded-lg p-4 bg-gray-50">
-                            <img
-                              src={`${API_BASE}${t.image}`}
-                              alt={`table-${t.index}`}
-                              className="w-full h-48 object-contain rounded"
-                            />
+                            {t.image ? (
+                              <img
+                                src={buildUrl(t.image)}
+                                alt={`table-${t.index}`}
+                                className="w-full h-48 object-contain rounded"
+                              />
+                            ) : (
+                              <div className="text-sm text-gray-500">No image available</div>
+                            )}
                           </div>
                         ))
                       ) : results.table_crop_image ? (
                         <div className="border rounded-lg p-4 bg-gray-50">
                           <img
-                            src={`${API_BASE}${results.table_crop_image}`}
+                            src={buildUrl(results.table_crop_image)}
                             alt="Cropped table"
                             className="w-full h-48 object-contain rounded"
                           />
@@ -369,7 +393,7 @@ export default function ProcessingResults({ files }: ProcessingResultsProps) {
               <TabsContent value="warnings" className="space-y-4">
                 {results.warnings?.length > 0 ? (
                   <div className="space-y-2">
-                    {results.warnings.map((warning: any, index: number) => (
+                    {results.warnings.map((warning: { header_warning?: string; table?: number; row?: number; field?: string; message: string }, index: number) => (
                       <div
                         key={index}
                         className="flex items-start gap-3 p-3 bg-yellow-50 border border-yellow-200 rounded-lg"

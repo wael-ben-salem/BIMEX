@@ -610,7 +610,9 @@ def generate_pdf_report(data: dict, output_path: str):
     )
 
     # Generate PDF (configure wkhtmltopdf path if needed)
-    config = pdfkit.configuration()  # add path to wkhtmltopdf here if required
+    config = pdfkit.configuration(
+    wkhtmltopdf=r"C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe"
+)# add path to wkhtmltopdf here if required
     options = {
         "enable-local-file-access": None,
         "encoding": "UTF-8",

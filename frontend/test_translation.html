@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Traduction BIM</title>
+    <script src="translation-bim.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f0f0f0;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .language-selector {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        .lang-btn {
+            margin: 0 5px;
+            padding: 8px 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .lang-btn.active {
+            background: #007bff;
+            color: white;
+        }
+        h1, h2, h3, h4 {
+            color: #333;
+        }
+        .test-element {
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sélecteur de langue -->
+    <div class="language-selector">
+        <div class="lang-buttons">
+            <button class="lang-btn active" data-lang="fr" title="Français">🇫🇷 FR</button>
+            <button class="lang-btn" data-lang="en" title="English">🇺🇸 EN</button>
+            <button class="lang-btn" data-lang="de" title="Deutsch">🇩🇪 DE</button>
+        </div>
+    </div>
+
+    <h1 data-translate="title">BIMEX - Interface d'Analyse Intelligente BIM</h1>
+    
+    <div class="test-section">
+        <h2>Test des Widgets</h2>
+        
+        <div class="test-element">
+            <h4 data-translate="timeline_analyses">⏱️ Timeline des Analyses</h4>
+            <p>Ceci devrait se traduire</p>
+        </div>
+        
+        <div class="test-element">
+            <h4 data-translate="cost_predictor_ai">💰 Prédicteur de Coûts IA</h4>
+            <p>Ceci devrait se traduire</p>
+        </div>
+        
+        <div class="test-element">
+            <h4 data-translate="performance_radar">🎯 Radar de Performance Multi-Dimensionnel</h4>
+            <p>Ceci devrait se traduire</p>
+        </div>
+        
+        <div class="test-element">
+            <h4 data-translate="predictive_intelligence">🧠 Intelligence Prédictive BIM</h4>
+            <p>Ceci devrait se traduire</p>
+        </div>
+        
+        <div class="test-element">
+            <h4 data-translate="bim_intelligence_hub">🧠 BIM Intelligence Hub</h4>
+            <p>Ceci devrait se traduire</p>
+        </div>
+        
+        <div class="test-element">
+            <h4 data-translate="intelligent_bim_analysis">🧠 Analyse BIM Intelligente</h4>
+            <p>Ceci devrait se traduire</p>
+        </div>
+        
+        <div class="test-element">
+            <h4 data-translate="innovation_lab">🚀 Innovation Lab</h4>
+            <p>Ceci devrait se traduire</p>
+        </div>
+        
+        <div class="test-element">
+            <h4 data-translate="smart_performance_dashboard">🎯 Smart Performance Dashboard</h4>
+            <p>Ceci devrait se traduire</p>
+        </div>
+        
+        <div class="test-element">
+            <h4 data-translate="semantic_bim_analysis">🧠 Analyse Sémantique BIM</h4>
+            <p>Ceci devrait se traduire</p>
+        </div>
+        
+        <div class="test-element">
+            <h4 data-translate="connectivity_matrix">🏗️ Matrice de Connectivité</h4>
+            <p>Ceci devrait se traduire</p>
+        </div>
+        
+        <div class="test-element">
+            <h4 data-translate="geometric_analysis">📐 Analyse Géométrique Avancée</h4>
+            <p>Ceci devrait se traduire</p>
+        </div>
+        
+        <div class="test-element">
+            <h4 data-translate="file_detected_auto">✅ Fichier Détecté Automatiquement</h4>
+            <p>Ceci devrait se traduire</p>
+        </div>
+        
+        <div class="test-element">
+            <h4 data-translate="real_time_activity">Activité en Temps Réel</h4>
+            <p>Ceci devrait se traduire</p>
+        </div>
+        
+        <div class="test-element">
+            <h4 data-translate="real_time_analytics">Analytics BI en Temps Réel</h4>
+            <p>Ceci devrait se traduire</p>
+        </div>
+        
+        <div class="test-element">
+            <h4 data-translate="workflow_diagram">Diagramme de Workflow</h4>
+            <p>Ceci devrait se traduire</p>
+        </div>
+        
+        <div class="test-element">
+            <h4 data-translate="anomalies_heatmap">🔥 Heatmap des Anomalies</h4>
+            <p>Ceci devrait se traduire</p>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test des Boutons</h2>
+        <button data-translate="execute_workflow">Exécuter Workflow Complet</button>
+        <button data-translate="pause">Pause</button>
+        <button data-translate="stop">Arrêter</button>
+        <button data-translate="close">Fermer</button>
+        <button data-translate="previous">Précédent</button>
+        <button data-translate="next">Suivant</button>
+        <button data-translate="start">Démarrer</button>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test des Statuts</h2>
+        <div class="test-element">
+            <span data-translate="status_pending">En attente</span>
+        </div>
+        <div class="test-element">
+            <span data-translate="status_running">En cours</span>
+        </div>
+        <div class="test-element">
+            <span data-translate="status_completed">Terminé</span>
+        </div>
+        <div class="test-element">
+            <span data-translate="status_error">Erreur</span>
+        </div>
+    </div>
+
+    <script>
+        // Ajouter les écouteurs d'événements pour les boutons de langue
+        document.addEventListener('DOMContentLoaded', function() {
+            const langButtons = document.querySelectorAll('.lang-btn');
+            langButtons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Retirer la classe active de tous les boutons
+                    langButtons.forEach(b => b.classList.remove('active'));
+                    // Ajouter la classe active au bouton cliqué
+                    this.classList.add('active');
+                    
+                    const lang = this.getAttribute('data-lang');
+                    changeLanguage(lang);
+                });
+            });
+            
+            // Initialiser avec le français
+            changeLanguage('fr');
+        });
+    </script>
+</body>
+</html>
+

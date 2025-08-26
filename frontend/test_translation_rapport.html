@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Traduction Rapport</title>
+    <script src="translation-rapport.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f0f0f0;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .language-selector {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        .lang-btn {
+            margin: 0 5px;
+            padding: 8px 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .lang-btn.active {
+            background: #007bff;
+            color: white;
+        }
+        h1, h2, h3, h4 {
+            color: #333;
+        }
+        .test-element {
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .btn {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .btn-primary { background: #007bff; color: white; }
+        .btn-secondary { background: #6c757d; color: white; }
+        .btn-success { background: #28a745; color: white; }
+    </style>
+</head>
+<body>
+    <!-- Sélecteur de langue -->
+    <div class="language-selector">
+        <div class="lang-buttons">
+            <button class="lang-btn active" data-lang="fr" title="Français">🇫🇷 FR</button>
+            <button class="lang-btn" data-lang="en" title="English">🇺🇸 EN</button>
+            <button class="lang-btn" data-lang="de" title="Deutsch">🇩🇪 DE</button>
+        </div>
+    </div>
+
+    <h1 data-translate="report_title">BIMEX - Rapport d'Analyse BIM Avancée</h1>
+    
+    <div class="test-section">
+        <h2>Test des Titres et En-têtes</h2>
+        
+        <div class="test-element">
+            <h3 data-translate="mission_control_center">CENTRE DE CONTRÔLE DE MISSION</h3>
+            <p>Ceci devrait se traduire</p>
+        </div>
+        
+        <div class="test-element">
+            <h3 data-translate="intelligence_artificielle">Intelligence Artificielle</h3>
+            <p>Ceci devrait se traduire</p>
+        </div>
+        
+        <div class="test-element">
+            <h3 data-translate="analyse_avancee">Analyse Avancée</h3>
+            <p>Ceci devrait se traduire</p>
+        </div>
+        
+        <div class="test-element">
+            <h3 data-translate="rapport_analyse_bim">🏗️ RAPPORT D'ANALYSE BIM AVANCÉE</h3>
+            <p>Ceci devrait se traduire</p>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test des Boutons et Navigation</h2>
+        
+        <button class="btn btn-success" data-translate="retour">Retour</button>
+        <button class="btn btn-primary" data-translate="telecharger">Télécharger</button>
+        <button class="btn btn-secondary" data-translate="imprimer">Imprimer</button>
+        <button class="btn btn-primary" data-translate="partager">Partager</button>
+        <button class="btn btn-secondary" data-translate="fermer">Fermer</button>
+        <button class="btn btn-primary" data-translate="suivant">Suivant</button>
+        <button class="btn btn-primary" data-translate="precedent">Précédent</button>
+        <button class="btn btn-success" data-translate="valider">Valider</button>
+        <button class="btn btn-secondary" data-translate="annuler">Annuler</button>
+        <button class="btn btn-success" data-translate="sauvegarder">Sauvegarder</button>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test des Actions et États</h2>
+        
+        <button class="btn btn-success" data-translate="demarrer">Démarrer</button>
+        <button class="btn btn-danger" data-translate="arreter">Arrêter</button>
+        <button class="btn btn-warning" data-translate="pause">Pause</button>
+        <button class="btn btn-success" data-translate="reprendre">Reprendre</button>
+        <button class="btn btn-primary" data-translate="actualiser">Actualiser</button>
+        <button class="btn btn-secondary" data-translate="reinitialiser">Réinitialiser</button>
+        <button class="btn btn-primary" data-translate="configurer">Configurer</button>
+        <button class="btn btn-primary" data-translate="analyser">Analyser</button>
+        <button class="btn btn-success" data-translate="generer">Générer</button>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test des Statuts et Messages</h2>
+        
+        <div class="test-element">
+            <span data-translate="en_cours">En cours</span>
+        </div>
+        <div class="test-element">
+            <span data-translate="termine">Terminé</span>
+        </div>
+        <div class="test-element">
+            <span data-translate="en_attente">En attente</span>
+        </div>
+        <div class="test-element">
+            <span data-translate="erreur">Erreur</span>
+        </div>
+        <div class="test-element">
+            <span data-translate="succes">Succès</span>
+        </div>
+        <div class="test-element">
+            <span data-translate="attention">Attention</span>
+        </div>
+        <div class="test-element">
+            <span data-translate="information">Information</span>
+        </div>
+        <div class="test-element">
+            <span data-translate="chargement">Chargement...</span>
+        </div>
+        <div class="test-element">
+            <span data-translate="traitement">Traitement en cours...</span>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test des Sections de Rapport</h2>
+        
+        <div class="test-element">
+            <h4 data-translate="resume_executif">Résumé Exécutif</h4>
+        </div>
+        <div class="test-element">
+            <h4 data-translate="analyse_detaillee">Analyse Détaillée</h4>
+        </div>
+        <div class="test-element">
+            <h4 data-translate="recommandations">Recommandations</h4>
+        </div>
+        <div class="test-element">
+            <h4 data-translate="conclusion">Conclusion</h4>
+        </div>
+        <div class="test-element">
+            <h4 data-translate="annexes">Annexes</h4>
+        </div>
+        <div class="test-element">
+            <h4 data-translate="methodologie">Méthodologie</h4>
+        </div>
+        <div class="test-element">
+            <h4 data-translate="resultats">Résultats</h4>
+        </div>
+        <div class="test-element">
+            <h4 data-translate="discussion">Discussion</h4>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test des Métriques et Indicateurs</h2>
+        
+        <div class="test-element">
+            <span data-translate="qualite_globale">Qualité Globale</span>
+        </div>
+        <div class="test-element">
+            <span data-translate="score_performance">Score de Performance</span>
+        </div>
+        <div class="test-element">
+            <span data-translate="niveau_conformite">Niveau de Conformité</span>
+        </div>
+        <div class="test-element">
+            <span data-translate="efficacite">Efficacité</span>
+        </div>
+        <div class="test-element">
+            <span data-translate="durabilite">Durabilité</span>
+        </div>
+        <div class="test-element">
+            <span data-translate="cout_estime">Coût Estimé</span>
+        </div>
+        <div class="test-element">
+            <span data-translate="delai_estime">Délai Estimé</span>
+        </div>
+        <div class="test-element">
+            <span data-translate="risques">Risques</span>
+        </div>
+        <div class="test-element">
+            <span data-translate="opportunites">Opportunités</span>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test des Éléments BIM</h2>
+        
+        <div class="test-element">
+            <span data-translate="elements_bim">Éléments BIM</span>
+        </div>
+        <div class="test-element">
+            <span data-translate="modeles_3d">Modèles 3D</span>
+        </div>
+        <div class="test-element">
+            <span data-translate="plans_2d">Plans 2D</span>
+        </div>
+        <div class="test-element">
+            <span data-translate="donnees_techniques">Données Techniques</span>
+        </div>
+        <div class="test-element">
+            <span data-translate="specifications">Spécifications</span>
+        </div>
+        <div class="test-element">
+            <span data-translate="calculs">Calculs</span>
+        </div>
+        <div class="test-element">
+            <span data-translate="simulations">Simulations</span>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test des Nouvelles Clés</h2>
+        
+        <div class="test-element">
+            <h4 data-translate="scores_bimex">Scores BIMEX</h4>
+        </div>
+        <div class="test-element">
+            <span data-translate="system_operational">SYSTÈME OPÉRATIONNEL</span>
+        </div>
+        <div class="test-element">
+            <span data-translate="ai_connected">IA CONNECTÉE</span>
+        </div>
+        <div class="test-element">
+            <span data-translate="projects">Projets</span>
+        </div>
+        <div class="test-element">
+            <span data-translate="new_generation">Nouvelle Génération</span>
+        </div>
+        <div class="test-element">
+            <span data-translate="add_bim_model">Ajouter un modèle BIM (IFC/RVT)</span>
+        </div>
+        <div class="test-element">
+            <span data-translate="loading_projects">Chargement des projets...</span>
+        </div>
+    </div>
+
+    <script>
+        // Ajouter les écouteurs d'événements pour les boutons de langue
+        document.addEventListener('DOMContentLoaded', function() {
+            const langButtons = document.querySelectorAll('.lang-btn');
+            langButtons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Retirer la classe active de tous les boutons
+                    langButtons.forEach(b => b.classList.remove('active'));
+                    // Ajouter la classe active au bouton cliqué
+                    this.classList.add('active');
+                    
+                    const lang = this.getAttribute('data-lang');
+                    changeLanguage(lang);
+                });
+            });
+            
+            // Initialiser avec le français
+            changeLanguage('fr');
+        });
+    </script>
+</body>
+</html>
+

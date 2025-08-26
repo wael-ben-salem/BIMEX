@@ -1,0 +1,132 @@
+<!-- Composant de sélecteur de langue avec drapeaux -->
+<div class="language-selector">
+    <div class="lang-buttons">
+        <button class="lang-btn" data-lang="fr" title="Français">
+            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMTgiIHZpZXdCb3g9IjAgMCAyNCAxOCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjI0IiBoZWlnaHQ9IjE4IiBmaWxsPSIjRkY5MDAwIi8+CjxyZWN0IHdpZHRoPSI4IiBoZWlnaHQ9IjE4IiBmaWxsPSIjMDAwMDAwIi8+CjxyZWN0IHdpZHRoPSIxNiIgaGVpZ2h0PSIxOCIgZmlsbD0iI0ZGRkZGRiIvPgo8L3N2Zz4K" alt="🇫🇷 Français">
+            <span>FR</span>
+        </button>
+        
+        <button class="lang-btn" data-lang="en" title="English">
+            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMTgiIHZpZXdCb3g9IjAgMCAyNCAxOCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjI0IiBoZWlnaHQ9IjE4IiBmaWxsPSIjMDAyNDdEIi8+CjxyZWN0IHdpZHRoPSI0IiBoZWlnaHQ9IjE4IiBmaWxsPSIjRkZGRkZGIi8+CjxyZWN0IHdpZHRoPSIyNCIgaGVpZ2h0PSIzIiBmaWxsPSIjRkZGRkZGIi8+CjxyZWN0IHdpZHRoPSIyNCIgaGVpZ2h0PSIzIiB5PSI2IiBmaWxsPSIjRkZGRkZGIi8+CjxyZWN0IHdpZHRoPSIyNCIgaGVpZ2h0PSIzIiB5PSI5IiBmaWxsPSIjRkZGRkZGIi8+CjxyZWN0IHdpZHRoPSIyNCIgaGVpZ2h0PSIzIiB5PSIxMiIgZmlsbD0iI0ZGRkZGRiIvPgo8cmVjdCB3aWR0aD0iMjQiIGhlaWdodD0iMyIgeT0iMTUiIGZpbGw9IiNGRkZGRkYiLz4KPHJlY3Qgd2lkdGg9IjQiIGhlaWdodD0iMTgiIGZpbGw9IiNGRkZGRkYiLz4KPHJlY3Qgd2lkdGg9IjQiIGhlaWdodD0iMTgiIHg9IjQiIGZpbGw9IiNGRkZGRkYiLz4KPHJlY3Qgd2lkdGg9IjQiIGhlaWdodD0iMTgiIHg9IjgiIGZpbGw9IiNGRkZGRkYiLz4KPHJlY3Qgd2lkdGg9IjQiIGhlaWdodD0iMTgiIHg9IjEyIiBmaWxsPSIjRkZGRkZGIi8+CjxyZWN0IHdpZHRoPSI0IiBoZWlnaHQ9IjE4IiB4PSIxNiIgZmlsbD0iI0ZGRkZGRiIvPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSIxOCIgeD0iMjAiIGZpbGw9IiNGRkZGRkYiLz4KPC9zdmc+Cg==" alt="🇺🇸 English">
+            <span>EN</span>
+        </button>
+        
+        <button class="lang-btn" data-lang="de" title="Deutsch">
+            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMTgiIHZpZXdCb3g9IjAgMCAyNCAxOCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjI0IiBoZWlnaHQ9IjE4IiBmaWxsPSIjMDAwMDAwIi8+CjxyZWN0IHdpZHRoPSIyNCIgaGVpZ2h0PSI2IiBmaWxsPSIjRkY5MDAwIi8+CjxyZWN0IHdpZHRoPSIyNCIgaGVpZ2h0PSI2IiB5PSI2IiBmaWxsPSIjRkZGRkZGIi8+CjxyZWN0IHdpZHRoPSIyNCIgaGVpZ2h0PSI2IiB5PSIxMiIgZmlsbD0iI0ZGRkYwMCIvPgo8L3N2Zz4K" alt="🇩🇪 Deutsch">
+            <span>DE</span>
+        </button>
+    </div>
+</div>
+
+<style>
+.language-selector {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    background: rgba(26, 26, 46, 0.9);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 245, 255, 0.3);
+    border-radius: 12px;
+    padding: 8px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.lang-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.lang-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    background: transparent;
+    border: 1px solid rgba(0, 245, 255, 0.3);
+    border-radius: 8px;
+    color: #ffffff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 12px;
+    font-weight: 500;
+    min-width: 60px;
+    justify-content: center;
+}
+
+.lang-btn:hover {
+    background: rgba(0, 245, 255, 0.1);
+    border-color: rgba(0, 245, 255, 0.6);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 245, 255, 0.3);
+}
+
+.lang-btn.active {
+    background: rgba(0, 245, 255, 0.2);
+    border-color: #00f5ff;
+    box-shadow: 0 0 20px rgba(0, 245, 255, 0.5);
+}
+
+.lang-btn img {
+    width: 16px;
+    height: 12px;
+    border-radius: 2px;
+}
+
+.lang-btn span {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+/* Animation d'apparition */
+.language-selector {
+    animation: slideInRight 0.5s ease-out;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .language-selector {
+        top: 10px;
+        right: 10px;
+        padding: 6px;
+    }
+    
+    .lang-btn {
+        padding: 6px 8px;
+        min-width: 50px;
+        font-size: 10px;
+    }
+    
+    .lang-btn span {
+        display: none;
+    }
+}
+</style>
+
+<script>
+// Ajouter les événements de clic aux boutons de langue
+document.addEventListener('DOMContentLoaded', function() {
+    const langButtons = document.querySelectorAll('.lang-btn');
+    
+    langButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const lang = this.getAttribute('data-lang');
+            changeLanguage(lang);
+        });
+    });
+});
+</script>
+
+

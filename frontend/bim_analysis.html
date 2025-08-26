@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BIMEX - Interface d'Analyse Intelligente BIM</title>
+    <title data-translate="title">BIMEX - Interface d'Analyse Intelligente BIM</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="translation-bim.js"></script>
     <style>
         :root {
             /* BIMEX Mission Control Theme */
@@ -59,6 +60,67 @@
             position: relative;
             overflow-x: hidden;
             color: #ffffff;
+        }
+        
+        /* Sélecteur de langue */
+        .language-selector {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: rgba(26, 26, 46, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 245, 255, 0.3);
+            border-radius: 12px;
+            padding: 8px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        .lang-buttons {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .lang-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 12px;
+            background: transparent;
+            border: 1px solid rgba(0, 245, 255, 0.3);
+            border-radius: 8px;
+            color: #ffffff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 12px;
+            font-weight: 500;
+            min-width: 60px;
+            justify-content: center;
+        }
+        
+        .lang-btn:hover {
+            background: rgba(0, 245, 255, 0.1);
+            border-color: rgba(0, 245, 255, 0.6);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0, 245, 255, 0.3);
+        }
+        
+        .lang-btn.active {
+            background: rgba(0, 245, 255, 0.2);
+            border-color: #00f5ff;
+            box-shadow: 0 0 20px rgba(0, 245, 255, 0.5);
+        }
+        
+        .lang-btn img {
+            width: 16px;
+            height: 12px;
+            border-radius: 2px;
+        }
+        
+        .lang-btn span {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
         }
 
         /* BIMEX Futuristic Background */
@@ -9100,6 +9162,26 @@
     </style>
 </head>
 <body>
+    <!-- Sélecteur de langue -->
+    <div class="language-selector">
+        <div class="lang-buttons">
+            <button class="lang-btn" data-lang="fr" title="Français">
+                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMTgiIHZpZXdCb3g9IjAgMCAyNCAxOCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjI0IiBoZWlnaHQ9IjE4IiBmaWxsPSIjRkY5MDAwIi8+CjxyZWN0IHdpZHRoPSI4IiBoZWlnaHQ9IjE4IiBmaWxsPSIjMDAwMDAwIi8+CjxyZWN0IHdpZHRoPSIxNiIgaGVpZ2h0PSIxOCIgZmlsbD0iI0ZGRkZGRiIvPgo8L3N2Zz4K" alt="🇫🇷 Français">
+                <span>FR</span>
+            </button>
+            
+            <button class="lang-btn" data-lang="en" title="English">
+                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMTgiIHZpZXdCb3g9IjAgMCAyNCAxOCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjI0IiBoZWlnaHQ9IjE4IiBmaWxsPSIjMDAyNDdEIi8+CjxyZWN0IHdpZHRoPSI0IiBoZWlnaHQ9IjE4IiBmaWxsPSIjRkZGRkZGIi8+CjxyZWN0IHdpZHRoPSIyNCIgaGVpZ2h0PSIzIiBmaWxsPSIjRkZGRkZGIi8+CjxyZWN0IHdpZHRoPSIyNCIgaGVpZ2h0PSIzIiB5PSI2IiBmaWxsPSIjRkZGRkZGIi8+CjxyZWN0IHdpZHRoPSIyNCIgaGVpZ2h0PSIzIiB5PSI5IiBmaWxsPSIjRkZGRkZGIi8+CjxyZWN0IHdpZHRoPSIyNCIgaGVpZ2h0PSIzIiB5PSIxMiIgZmlsbD0iI0ZGRkZGRiIvPgo8cmVjdCB3aWR0aD0iMjQiIGhlaWdodD0iMyIgeT0iMTUiIGZpbGw9IiNGRkZGRkYiLz4KPHJlY3Qgd2lkdGg9IjQiIGhlaWdodD0iMTgiIGZpbGw9IiNGRkZGRkYiLz4KPHJlY3Qgd2lkdGg9IjQiIGhlaWdodD0iMTgiIHg9IjQiIGZpbGw9IiNGRkZGRkYiLz4KPHJlY3Qgd2lkdGg9IjQiIGhlaWdodD0iMTgiIHg9IjgiIGZpbGw9IiNGRkZGRkYiLz4KPHJlY3Qgd2lkdGg9IjQiIGhlaWdodD0iMTgiIHg9IjEyIiBmaWxsPSIjRkZGRkZGIi8+CjxyZWN0IHdpZHRoPSI0IiBoZWlnaHQ9IjE4IiB4PSIxNiIgZmlsbD0iI0ZGRkZGRiIvPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSIxOCIgeD0iMjAiIGZpbGw9IiNGRkZGRkYiLz4KPC9zdmc+Cg==" alt="🇺🇸 English">
+                <span>EN</span>
+            </button>
+            
+            <button class="lang-btn" data-lang="de" title="Deutsch">
+                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMTgiIHZpZXdCb3g9IjAgMCAyNCAxOCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjI0IiBoZWlnaHQ9IjE4IiBmaWxsPSIjMDAwMDAwIi8+CjxyZWN0IHdpZHRoPSI2IiBoZWlnaHQ9IjE4IiBmaWxsPSIjRkY5MDAwIi8+CjxyZWN0IHdpZHRoPSIyNCIgaGVpZ2h0PSI2IiB5PSI2IiBmaWxsPSIjRkZGRkZGIi8+CjxyZWN0IHdpZHRoPSIyNCIgaGVpZ2h0PSI2IiB5PSIxMiIgZmlsbD0iI0ZGRkYwMCIvPgo8L3N2Zz4K" alt="🇩🇪 Deutsch">
+                <span>DE</span>
+            </button>
+        </div>
+    </div>
+
     <!-- BIMEX Mission Control Interface -->
     <div class="mission-control-container">
     
@@ -9113,11 +9195,11 @@
                         <i class="fas fa-arrow-left"></i>
                        
                     </a>
-                    <h1>
+                    <h1 data-translate="home_title">
                         <i class="fas fa-satellite-dish"></i>
                         Centre de Contrôle BIMEX
                     </h1>
-                    <p class="mission-subtitle">Intelligence Artificielle pour l'Analyse BIM Avancée</p>
+                    <p class="mission-subtitle" data-translate="welcome_message">Intelligence Artificielle pour l'Analyse BIM Avancée</p>
                 </div>
 
                 <div class="mission-status">
@@ -9141,7 +9223,7 @@
                             <i class="fas fa-upload"></i>
                         </div>
                         <div class="step-info-h">
-                            <div class="step-name-h">Initialisation</div>
+                            <div class="step-name-h" data-translate="step_upload">Initialisation</div>
                             <div class="step-status-h">Fichier Détecté</div>
                         </div>
                     </div>
@@ -9151,7 +9233,7 @@
                             <i class="fas fa-chart-bar"></i>
                         </div>
                         <div class="step-info-h">
-                            <div class="step-name-h">Analyse Complète</div>
+                            <div class="step-name-h" data-translate="step_analysis">Analyse Complète</div>
                             <div class="step-status-h">En Attente</div>
                         </div>
                         <button class="step-action-btn-h" onclick="analyzeFile()">
@@ -9164,7 +9246,7 @@
                             <i class="fas fa-brain"></i>
                         </div>
                         <div class="step-info-h">
-                            <div class="step-name-h">Classification IA</div>
+                            <div class="step-name-h" data-translate="step_classification">Classification IA</div>
                             <div class="step-status-h">En Attente</div>
                         </div>
                         <button class="step-action-btn-h" onclick="classifyBuilding()">
@@ -9177,7 +9259,7 @@
                             <i class="fas fa-wheelchair"></i>
                         </div>
                         <div class="step-info-h">
-                            <div class="step-name-h">Analyse PMR</div>
+                            <div class="step-name-h" data-translate="step_pmr">Analyse PMR</div>
                             <div class="step-status-h">En Attente</div>
                         </div>
                         <button class="step-action-btn-h" onclick="analyzePMR()">
@@ -9190,7 +9272,7 @@
                             <i class="fas fa-robot"></i>
                         </div>
                         <div class="step-info-h">
-                            <div class="step-name-h">Assistant IA</div>
+                            <div class="step-name-h" data-translate="step_assistant">Assistant IA</div>
                             <div class="step-status-h">En Attente</div>
                         </div>
                         <button class="step-action-btn-h" onclick="launchAIAssistant()">
@@ -9206,7 +9288,7 @@
                             <i class="fas fa-coins"></i>
                         </div>
                         <div class="step-info-h">
-                            <div class="step-name-h">Prédiction Coûts IA</div>
+                            <div class="step-name-h" data-translate="step_costs">Prédiction Coûts IA</div>
                             <div class="step-status-h">En Attente</div>
                         </div>
                         <button class="step-action-btn-h" onclick="launchCostPrediction()">
@@ -9219,7 +9301,7 @@
                             <i class="fas fa-leaf"></i>
                         </div>
                         <div class="step-info-h">
-                            <div class="step-name-h">Analyse Environnementale</div>
+                            <div class="step-name-h" data-translate="step_environment">Analyse Environnementale</div>
                             <div class="step-status-h">En Attente</div>
                         </div>
                         <button class="step-action-btn-h" onclick="launchEnvironmentalAnalysis()">
@@ -9232,7 +9314,7 @@
                             <i class="fas fa-magic"></i>
                         </div>
                         <div class="step-info-h">
-                            <div class="step-name-h">Optimisation IA</div>
+                            <div class="step-name-h" data-translate="step_optimization">Optimisation IA</div>
                             <div class="step-status-h">En Attente</div>
                         </div>
                         <button class="step-action-btn-h" onclick="launchOptimization()">
@@ -9245,7 +9327,7 @@
                             <i class="fas fa-shield-alt"></i>
                         </div>
                         <div class="step-info-h">
-                            <div class="step-name-h">Détection Anomalies</div>
+                            <div class="step-name-h" data-translate="step_anomalies">Détection Anomalies</div>
                             <div class="step-status-h">En Attente</div>
                         </div>
                         <button class="step-action-btn-h" onclick="detectAnomalies()">
@@ -9258,7 +9340,7 @@
                             <i class="fas fa-file-pdf"></i>
                         </div>
                         <div class="step-info-h">
-                            <div class="step-name-h"  >Rapport PDF</div>
+                            <div class="step-name-h" data-translate="step_report">Rapport PDF</div>
                             <div class="step-status-h">En Attente</div>
                         </div>
                         <button class="step-action-btn-h" onclick="generatePDFReport()">
@@ -9275,7 +9357,7 @@
                         <i class="fas fa-radar"></i>
                     </div>
                     <div class="detection-info">
-                        <h3>✅ Fichier Détecté Automatiquement</h3>
+                        <h3 data-translate="file_detected_auto">✅ Fichier Détecté Automatiquement</h3>
                         <p>Système de détection automatique activé</p>
                     </div>
                 </div>
@@ -9346,15 +9428,15 @@
                     <div class="workflow-controls">
                         <button class="workflow-btn execute" onclick="executeFullWorkflow()" id="executeWorkflowBtn">
                             <i class="fas fa-play"></i>
-                            <span>Exécuter Workflow Complet</span>
+                            <span data-translate="execute_workflow">Exécuter Workflow Complet</span>
                         </button>
                         <button class="workflow-btn pause" onclick="pauseWorkflow()" id="pauseWorkflowBtn" disabled>
                             <i class="fas fa-pause"></i>
-                            <span>Pause</span>
+                            <span data-translate="pause">Pause</span>
                         </button>
                         <button class="workflow-btn stop" onclick="stopWorkflow()" id="stopWorkflowBtn" disabled>
                             <i class="fas fa-stop"></i>
-                            <span>Arrêter</span>
+                            <span data-translate="stop">Arrêter</span>
                         </button>
                     </div>
 
@@ -9369,12 +9451,12 @@
                     <!-- Diagramme de Workflow Visuel -->
                     <div class="workflow-diagram">
                         <div class="diagram-header">
-                            <h4><i class="fas fa-project-diagram"></i> Diagramme de Workflow</h4>
+                            <h4 data-translate="workflow_diagram"><i class="fas fa-project-diagram"></i> Diagramme de Workflow</h4>
                             <div class="diagram-legend">
-                                <span class="legend-item"><span class="legend-dot pending"></span>En attente</span>
-                                <span class="legend-item"><span class="legend-dot running"></span>En cours</span>
-                                <span class="legend-item"><span class="legend-dot completed"></span>Terminé</span>
-                                <span class="legend-item"><span class="legend-dot error"></span>Erreur</span>
+                                <span class="legend-item"><span class="legend-dot pending"></span data-translate="status_pending">En attente</span>
+                                <span class="legend-item"><span class="legend-dot running"></span data-translate="status_running">En cours</span>
+                                <span class="legend-item"><span class="legend-dot completed"></span data-translate="status_completed">Terminé</span>
+                                <span class="legend-item"><span class="legend-dot error"></span data-translate="status_error">Erreur</span>
                             </div>
                         </div>
 
@@ -9396,7 +9478,7 @@
                             <div class="parallel-group">
                                 <div class="flow-node analysis-node" id="flow-comprehensive" data-step="comprehensive">
                                     <div class="node-icon"><i class="fas fa-search"></i></div>
-                                    <div class="node-label">Analyse<br>Complète</div>
+                                    <div class="node-label" data-translate="step_analysis">Analyse<br>Complète</div>
                                     <div class="node-status pending"></div>
                                 </div>
 
@@ -9516,7 +9598,7 @@
             <!-- 2. Dashboard BI Analytics - DEUXIÈME POSITION -->
             <div class="bi-analytics-dashboard secondary-section" id="biDashboard">
                 <div class="dashboard-header">
-                    <h3><i class="fas fa-chart-bar"></i> Analytics BI en Temps Réel</h3>
+                    <h3 data-translate="real_time_analytics"><i class="fas fa-chart-bar"></i> Analytics BI en Temps Réel</h3>
                     <div class="dashboard-controls">
                                         <button class="refresh-btn" onclick="refreshDashboard(true)">
                     <i class="fas fa-sync-alt"></i>
@@ -9666,7 +9748,7 @@
                         <!-- Widget 2: Heatmap Interactive -->
                         <div class="widget-container heatmap-widget">
                             <div class="widget-header">
-                                <h4>🔥 Heatmap des Anomalies</h4>
+                                <h4 data-translate="anomalies_heatmap">🔥 Heatmap des Anomalies</h4>
                                 <div class="widget-controls">
                                   
                                 </div>
@@ -9683,7 +9765,7 @@
                         <!-- Widget 3: Prédicteur de Coûts IA -->
                         <div class="widget-container cost-predictor-widget">
                             <div class="widget-header">
-                                <h4>💰 Prédicteur de Coûts IA</h4>
+                                <h4 data-translate="cost_predictor_ai">💰 Prédicteur de Coûts IA</h4>
                                 <div class="widget-status">
                                     <span class="ai-badge">IA</span>
                                 </div>
@@ -9706,7 +9788,7 @@
                         <!-- Widget 4: Timeline Interactive -->
                         <div class="widget-container timeline-widget">
                             <div class="widget-header">
-                                <h4>⏱️ Timeline des Analyses</h4>
+                                <h4 data-translate="timeline_analyses">⏱️ Timeline des Analyses</h4>
                                 <div class="widget-controls">
                                   
                                 </div>
@@ -9726,7 +9808,7 @@
                     <div class="dashboard-row-3">
                         <div class="widget-container radar-widget full-width">
                             <div class="widget-header">
-                                <h4>🎯 Radar de Performance Multi-Dimensionnel</h4>
+                                <h4 data-translate="performance_radar">🎯 Radar de Performance Multi-Dimensionnel</h4>
                                 <div class="widget-controls">
                                     
                                 </div>
@@ -9768,7 +9850,7 @@
                         <!-- Widget 5: Intelligence Prédictive BIM -->
                         <div class="widget-container ai-prediction-widget">
                             <div class="widget-header">
-                                <h4>🧠 Intelligence Prédictive BIM</h4>
+                                <h4 data-translate="predictive_intelligence">🧠 Intelligence Prédictive BIM</h4>
                                 <div class="widget-status">
                                     <span class="ai-badge advanced">IA+</span>
                                     <span class="prediction-status" id="predictionStatus">Analysing...</span>
@@ -9809,7 +9891,7 @@
                                             <!-- 🧠 NOUVEAU: BIM Intelligence Hub -->
                     <div class="widget-container bim-intelligence-hub-widget">
                             <div class="widget-header">
-                            <h4>🧠 BIM Intelligence Hub</h4>
+                            <h4 data-translate="bim_intelligence_hub">🧠 BIM Intelligence Hub</h4>
                                 <div class="widget-controls">
                               
                                 </div>
@@ -9894,7 +9976,7 @@
                         <!-- Widget 7: Analyse BIM Intelligente -->
                         <div class="widget-container bim-intelligence-widget full-width">
                             <div class="widget-header">
-                                <h4>🧠 Analyse BIM Intelligente</h4>
+                                <h4 data-translate="intelligent_bim_analysis">🧠 Analyse BIM Intelligente</h4>
                                 <div class="widget-controls">
                                    
                                 </div>
@@ -9996,7 +10078,7 @@
                                             <!-- 🎯 NOUVEAU: Smart Performance Dashboard -->
                     <div class="widget-container smart-performance-widget">
                             <div class="widget-header">
-                            <h4>🎯 Smart Performance Dashboard</h4>
+                            <h4 data-translate="smart_performance_dashboard">🎯 Smart Performance Dashboard</h4>
                             <div class="widget-controls">
                                
                                 </div>
@@ -10077,7 +10159,7 @@
                         <!-- 🚀 NOUVEAU: Innovation Lab -->
                         <div class="widget-container innovation-lab-widget">
                             <div class="widget-header">
-                                <h4>🚀 Innovation Lab</h4>
+                                <h4 data-translate="innovation_lab">🚀 Innovation Lab</h4>
                                 <div class="widget-controls">
                                    
                                 </div>
@@ -10185,7 +10267,7 @@
                         <!-- Widget 5: Analyse Sémantique Intelligente -->
                         <div class="widget-container semantic-analysis-widget">
                             <div class="widget-header">
-                                <h4>🧠 Analyse Sémantique BIM</h4>
+                                <h4 data-translate="semantic_bim_analysis">🧠 Analyse Sémantique BIM</h4>
                                 <div class="widget-status">
                                     <span class="semantic-score" id="semanticScore">--</span>
                                     <span class="score-label">Score Sémantique</span>
@@ -10227,7 +10309,7 @@
                         <!-- Widget 6: Matrice de Connectivité BIM -->
                         <div class="widget-container connectivity-matrix-widget">
                             <div class="widget-header">
-                                <h4>🏗️ Matrice de Connectivité</h4>
+                                <h4 data-translate="connectivity_matrix">🏗️ Matrice de Connectivité</h4>
                                 <div class="widget-controls">
                                     <select id="connectivityView" onchange="updateConnectivityMatrix()">
                                         <option value="spatial">Spatiale</option>
@@ -10261,7 +10343,7 @@
                         <!-- Widget 7: Analyse Géométrique Avancée -->
                         <div class="widget-container geometric-analysis-widget full-width">
                             <div class="widget-header">
-                                <h4>📐 Analyse Géométrique Avancée</h4>
+                                <h4 data-translate="geometric_analysis">📐 Analyse Géométrique Avancée</h4>
                                 <div class="widget-controls">
                                    
                                 </div>
@@ -10332,7 +10414,7 @@
             <!-- Real-time Activity Feed (restauré à l'emplacement original) -->
             <div class="activity-feed">
                 <div class="feed-header">
-                    <h4><i class="fas fa-stream"></i> Activité en Temps Réel</h4>
+                    <h4 data-translate="real_time_activity"><i class="fas fa-stream"></i> Activité en Temps Réel</h4>
                     <div class="live-indicator">
                         <span class="live-dot"></span>
                         <span>LIVE</span>
@@ -10349,20 +10431,20 @@
             <!-- Zone de résultats avec onglets -->
             <div class="results-area" id="resultsArea">
                 <div class="tabs">
-                    <button class="tab active" onclick="showTab('analysis')">Analyse</button>
-                    <button class="tab" onclick="showTab('anomalies')">Anomalies</button>
-                    <button class="tab" onclick="showTab('classification')">Classification</button>
-                    <button class="tab" onclick="showTab('pmr')">PMR</button>
-                    <button class="tab" onclick="showTab('costs')" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white;">
-                        <i class="fas fa-coins"></i> Coûts IA
-                    </button>
-                    <button class="tab" onclick="showTab('environment')" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); color: white;">
-                        <i class="fas fa-leaf"></i> Environnement
-                    </button>
-                    <button class="tab" onclick="showTab('optimization')" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); color: white;">
-                        <i class="fas fa-magic"></i> Optimisation IA
-                    </button>
-                    <button class="tab" onclick="showTab('assistant')">Assistant IA</button>
+                    <button class="tab active" onclick="showTab('analysis')" data-translate="tab_analysis">Analyse</button>
+                    <button class="tab" onclick="showTab('anomalies')" data-translate="tab_anomalies">Anomalies</button>
+                    <button class="tab" onclick="showTab('classification')" data-translate="tab_classification">Classification</button>
+                    <button class="tab" onclick="showTab('pmr')" data-translate="tab_pmr">PMR</button>
+                                    <button class="tab" onclick="showTab('costs')" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white;" data-translate="tab_costs">
+                    <i class="fas fa-coins"></i> Coûts IA
+                </button>
+                                    <button class="tab" onclick="showTab('environment')" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); color: white;" data-translate="tab_environment">
+                    <i class="fas fa-leaf"></i> Environnement
+                </button>
+                                    <button class="tab" onclick="showTab('optimization')" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); color: white;" data-translate="tab_optimization">
+                    <i class="fas fa-magic"></i> Optimisation IA
+                </button>
+                    <button class="tab" onclick="showTab('assistant')" data-translate="tab_assistant">Assistant IA</button>
                 </div>
 
                 <div id="analysisTab" class="tab-content active">
@@ -25999,6 +26081,18 @@ Score de qualité: ${analysisData.quality_score}%`;
                 demoMode = true;
                 backendAvailable = false;
             }
+        });
+
+        // Gestion des langues
+        document.addEventListener('DOMContentLoaded', function() {
+            const langButtons = document.querySelectorAll('.lang-btn');
+            
+            langButtons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const lang = this.getAttribute('data-lang');
+                    changeLanguage(lang);
+                });
+            });
         });
 
     </script>

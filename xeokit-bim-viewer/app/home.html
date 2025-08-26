@@ -5,9 +5,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>BIMEX - Mission Control Center</title>
+    <title data-translate="home_title">BIMEX - Mission Control Center</title>
     <link rel="stylesheet" href="./lib/fontawesome-free-5.11.2-web/css/all.min.css" type="text/css" />
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="../../frontend/translation-rapport.js"></script>
     <style>
         :root {
             /* Couleurs futuristes BIMEX */
@@ -104,6 +105,67 @@
         @keyframes gridMove {
             0% { transform: translate(0, 0); }
             100% { transform: translate(50px, 50px); }
+        }
+
+        /* Sélecteur de langue */
+        .language-selector {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: rgba(26, 26, 46, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 245, 255, 0.3);
+            border-radius: 12px;
+            padding: 8px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        .lang-buttons {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .lang-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 12px;
+            background: transparent;
+            border: 1px solid rgba(0, 245, 255, 0.3);
+            border-radius: 8px;
+            color: #ffffff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 12px;
+            font-weight: 500;
+            min-width: 60px;
+            justify-content: center;
+        }
+        
+        .lang-btn:hover {
+            background: rgba(0, 245, 255, 0.1);
+            border-color: rgba(0, 245, 255, 0.6);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0, 245, 255, 0.3);
+        }
+        
+        .lang-btn.active {
+            background: rgba(0, 245, 255, 0.2);
+            border-color: #00f5ff;
+            box-shadow: 0 0 20px rgba(0, 245, 255, 0.5);
+        }
+        
+        .lang-btn img {
+            width: 16px;
+            height: 12px;
+            border-radius: 2px;
+        }
+        
+        .lang-btn span {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
         }
 
         .container {
@@ -1298,6 +1360,26 @@
 </head>
 
 <body>
+    <!-- Sélecteur de langue -->
+    <div class="language-selector">
+        <div class="lang-buttons">
+            <button class="lang-btn" data-lang="fr" title="Français">
+                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMTgiIHZpZXdCb3g9IjAgMCAyNCAxOCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjI0IiBoZWlnaHQ9IjE4IiBmaWxsPSIjRkY5MDAwIi8+CjxyZWN0IHdpZHRoPSI4IiBoZWlnaHQ9IjE4IiBmaWxsPSIjMDAwMDAwIi8+CjxyZWN0IHdpZHRoPSIxNiIgaGVpZ2h0PSIxOCIgZmlsbD0iI0ZGRkZGRiIvPgo8L3N2Zz4K" alt="🇫🇷 Français">
+                <span>FR</span>
+            </button>
+            
+            <button class="lang-btn" data-lang="en" title="English">
+                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMTgiIHZpZXdCb3g9IjAgMCAyNCAxOCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjI0IiBoZWlnaHQ9IjE4IiBmaWxsPSIjMDAyNDdEIi8+CjxyZWN0IHdpZHRoPSI0IiBoZWlnaHQ9IjE4IiBmaWxsPSIjRkZGRkZGIi8+CjxyZWN0IHdpZHRoPSIyNCIgaGVpZ2h0PSIzIiBmaWxsPSIjRkZGRkZGIi8+CjxyZWN0IHdpZHRoPSIyNCIgaGVpZ2h0PSIzIiB5PSI2IiBmaWxsPSIjRkZGRkZGIi8+CjxyZWN0IHdpZHRoPSIyNCIgaGVpZ2h0PSIzIiB5PSI5IiBmaWxsPSIjRkZGRkZGIi8+CjxyZWN0IHdpZHRoPSIyNCIgaGVpZ2h0PSIzIiB5PSIxMiIgZmlsbD0iI0ZGRkZGRiIvPgo8cmVjdCB3aWR0aD0iMjQiIGhlaWdodD0iMyIgeT0iMTUiIGZpbGw9IiNGRkZGRkYiLz4KPHJlY3Qgd2lkdGg9IjQiIGhlaWdodD0iMTgiIGZpbGw9IiNGRkZGRkYiLz4KPHJlY3Qgd2lkdGg9IjQiIGhlaWdodD0iMTgiIHg9IjQiIGZpbGw9IiNGRkZGRkYiLz4KPHJlY3Qgd2lkdGg9IjQiIGhlaWdodD0iMTgiIHg9IjgiIGZpbGw9IiNGRkZGRkYiLz4KPHJlY3Qgd2lkdGg9IjQiIGhlaWdodD0iMTgiIHg9IjEyIiBmaWxsPSIjRkZGRkZGIi8+CjxyZWN0IHdpZHRoPSI0IiBoZWlnaHQ9IjE4IiB4PSIxNiIgZmlsbD0iI0ZGRkZGRiIvPgo8cmVjdCB3aWR0aD0iMjQiIGhlaWdodD0iMyIgeT0iMTUiIGZpbGw9IiNGRkZGRkYiLz4KPHJlY3Qgd2lkdGg9IjQiIGhlaWdodD0iMTgiIHg9IjQiIGZpbGw9IiNGRkZGRkYiLz4KPHJlY3Qgd2lkdGg9IjQiIGhlaWdodD0iMTgiIHg9IjQiIGZpbGw9IiNGRkZGRkYiLz4KPHJlY3Qgd2lkdGg9IjQiIGhlaWdodD0iMTgiIHg9IjgiIGZpbGw9IiNGRkZGRkYiLz4KPHJlY3Qgd2lkdGg9IjQiIGhlaWdodD0iMTgiIHg9IjEyIiBmaWxsPSIjRkZGRkZGIi8+CjxyZWN0IHdpZHRoPSI0IiBoZWlnaHQ9IjE4IiB4PSIxNiIgZmlsbD0iI0ZGRkZGRiIvPgo8cmVjdCB3aWR0aD0iMjQiIGhlaWdodD0iMTgiIHg9IjQiIGZpbGw9IiNGRkZGRkYiLz4KPHJlY3Qgd2lkdGg9IjQiIGhlaWdodD0iMTgiIHg9IjQiIGZpbGw9IiNGRkZGRkYiLz4KPHJlY3Qgd2lkdGg9IjQiIGhlaWdodD0iMTgiIHg9IjgiIGZpbGw9IiNGRkZGRkYiLz4KPHJlY3Qgd2lkdGg9IjQiIGhlaWdodD0iMTgiIHg9IjEyIiBmaWxsPSIjRkZGRkZGIi8+CjxyZWN0IHdpZHRoPSI0IiBoZWlnaHQ9IjE4IiB4PSIxNiIgZmlsbD0iI0ZGRkZGRiIvPgo8cmVjdCB3aWR0aD0iMTgiIGhlaWdodD0iMTgiIHg9IjIwIiBmaWxsPSIjRkZGRkZGIi8+CjxyZWN0IHdpZHRoPSI0IiBoZWlnaHQ9IjE4IiB4PSIyMCIgZmlsbD0iI0ZGRkZGRiIvPgo8L3N2Zz4K" alt="🇺🇸 English">
+                <span>EN</span>
+            </button>
+            
+            <button class="lang-btn" data-lang="de" title="Deutsch">
+                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMTgiIHZpZXdCb3g9IjAgMCAyNCAxOCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjI0IiBoZWlnaHQ9IjE4IiBmaWxsPSIjMDAwMDAwIi8+CjxyZWN0IHdpZHRoPSI2IiBoZWlnaHQ9IjE4IiBmaWxsPSIjRkY5MDAwIi8+CjxyZWN0IHdpZHRoPSIyNCIgaGVpZ2h0PSI2IiB5PSI2IiBmaWxsPSIjRkZGRkZGIi8+CjxyZWN0IHdpZHRoPSIyNCIgaGVpZ2h0PSI2IiB5PSIxMiIgZmlsbD0iI0ZGRkYwMCIvPgo8L3N2Zz4K" alt="🇩🇪 Deutsch">
+                <span>DE</span>
+            </button>
+        </div>
+    </div>
+
     <div class="container">
         <div class="header">
             <div class="logo-container">
@@ -1305,7 +1387,7 @@
                 <div class="brand-text">
                     <h1 class="hero-title">BIMEX</h1>
                     <p class="hero-subtitle">
-                        Mission Control Center • Intelligence Artificielle • Analyse Avancée
+                        <span data-translate="mission_control_center">Mission Control Center</span> • <span data-translate="intelligence_artificielle">Intelligence Artificielle</span> • <span data-translate="analyse_avancee">Analyse Avancée</span>
                     </p>
                 </div>
             </div>
@@ -1314,11 +1396,11 @@
             <div class="system-status">
                 <div class="status-indicator">
                     <div class="status-dot"></div>
-                    <span>SYSTÈME OPÉRATIONNEL</span>
+                    <span data-translate="system_operational">SYSTÈME OPÉRATIONNEL</span>
                 </div>
                 <div class="status-indicator">
                     <i class="fas fa-brain"></i>
-                    <span>IA CONNECTÉE</span>
+                    <span data-translate="ai_connected">IA CONNECTÉE</span>
                 </div>
                 <div class="status-indicator">
                     <i class="fas fa-clock"></i>
@@ -1330,15 +1412,15 @@
         <div class="stats-bar">
             <div class="stat-item">
                 <span class="stat-number" id="projectCount">-</span>
-                <span class="stat-label">Projets</span>
+                <span class="stat-label" data-translate="projects">Projets</span>
             </div>
             <div class="stat-item">
                 <span class="stat-number">AI</span>
-                <span class="stat-label">Intelligence Artificielle</span>
+                <span class="stat-label" data-translate="intelligence_artificielle">Intelligence Artificielle</span>
             </div>
             <div class="stat-item">
                 <span class="stat-number">2.0</span>
-                <span class="stat-label">Nouvelle Génération</span>
+                <span class="stat-label" data-translate="new_generation">Nouvelle Génération</span>
             </div>
         </div>
 
@@ -1347,20 +1429,20 @@
         <div class="add-model-section">
             <button class="add-model-btn" onclick="openAddModelModal()">
                 <i class="fas fa-plus"></i>
-                Ajouter un modèle BIM (IFC/RVT)
+                <span data-translate="add_bim_model">Ajouter un modèle BIM (IFC/RVT)</span>
             </button>
         </div>
 
         <div class="search-section">
             <div class="search-box">
                 <i class="fas fa-search"></i>
-                <input type="text" id="searchInput" placeholder="Rechercher un projet...">
+                <input type="text" id="searchInput" placeholder="Rechercher un projet..." data-translate-placeholder="search_project">
             </div>
         </div>
 
         <div id="projectsContainer">
             <div class="loading">
-                <i class="fas fa-spinner fa-spin"></i> Chargement des projets...
+                <i class="fas fa-spinner fa-spin"></i> <span data-translate="loading_projects">Chargement des projets...</span>
             </div>
         </div>
     </div>

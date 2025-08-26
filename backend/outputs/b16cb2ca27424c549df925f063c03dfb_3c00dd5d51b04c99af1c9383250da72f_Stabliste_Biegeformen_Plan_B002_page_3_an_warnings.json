@@ -1,0 +1,11 @@
+[
+  {
+    "header_warning": "Missing DATE in header"
+  },
+  {
+    "header_warning": "Missing PROJECT in header"
+  },
+  {
+    "header_warning": "Missing DRAWING_NO in header"
+  }
+]
